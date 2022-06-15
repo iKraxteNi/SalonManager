@@ -1,0 +1,47 @@
+﻿@using SalonManager.Shared.ResponsesDTOs
+@using MudBlazor
+@using BlazorScheduler
+
+<MudDialog>
+    <TitleContent>
+        <MudText Typo="Typo.h6">
+            <MudIcon Icon="@Icons.Material.Filled.CalendarToday" Class="mr-3"/> @Appointment.Note
+        </MudText>
+    </TitleContent>
+    <DialogContent>
+        <MudTextField T="string" Label="Title" @bind-Text="Appointment.Note" />
+        <MudDateRangePicker Label="When" @bind-DateRange="_dateRange" />
+        
+    </DialogContent>
+    <DialogActions>
+        <MudButton Variant="Variant.Filled" Color="Color.Primary" OnClick="Close" Class="px-10">Close</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    [Parameter] public AppointmentDto Appointment { get; set; }
+
+    DateRange __dateRange;
+    DateRange _dateRange
+    {
+        get
+        {
+            return __dateRange;
+        }
+        set
+        {
+            (Appointment.StartTime, Appointment.EndTime) = (value.Start ?? Appointment.StartTime, value.End ?? Appointment.EndTime);
+            (__dateRange.Start, __dateRange.End) = (value.Start, value.End);
+        }
+    }
+
+    protected override void OnParametersSet()
+    {
+        __dateRange = new DateRange(Appointment.StartTime, Appointment.EndTime);
+        base.OnParametersSet();
+    }
+
+    void Close() => MudDialog.Close(DialogResult.Ok(true));
+}

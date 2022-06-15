@@ -1,0 +1,110 @@
+﻿<h3>SchedulerPage</h3>
+@page "/interactions"
+@using BlazorScheduler
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.WebUtilities
+@using MudBlazor
+@using SalonManager.Client.Dialogs
+@using SalonManager.Shared.ResponsesDTOs
+
+
+
+@inject NavigationManager NavManager
+
+@inject IDialogService DialogService
+@inject HttpClient Http
+
+
+<Scheduler OnRequestNewData="OnRequestNewData"
+           OnAddingNewAppointment="OnAddingNewAppointment"
+           OnOverflowAppointmentClick="OnOverflowAppointmentClick"
+           EnableRescheduling="true">
+           
+
+    <Appointments>
+        @foreach (var app in _appointments)
+        {
+<Appointment Start="@app.StartTime" End="@app.EndTime"  OnClick="() => OnAppointmentClicked(app)" OnReschedule="(start, end) => HandleReschedule(app, start, end)">
+    @*@app.Title*@
+    @app.Note
+</Appointment>}
+    </Appointments>
+</Scheduler>
+
+}
+
+
+
+@code {
+    private List<AppointmentDto> _appointments = new List<AppointmentDto>();
+    //
+    async Task OnRequestNewData(DateTime start, DateTime end)
+    {
+
+
+
+        var query = new Dictionary<string,string>
+        {
+            ["StartTime" ] =start.ToString("MM/dd/yyyy HH:mm") ,
+            ["EndTime"]  = end.ToString("MM/dd/yyyy HH:mm")
+        };
+        // string queryy = QueryHelpers.AddQueryString("api/appointment/getAll", query);
+
+        // NavManager.NavigateTo(QueryHelpers.AddQueryString("query-string-display", query));
+        //wysyłanie get query z filterem 
+        // var queryy= Newtonsoft.Json.JsonConvert.SerializeObject(query);
+        //var queryyy = System.Text.Json.JsonSerializerOptions<Queryable>(query) ;
+        await Task.Delay(500);
+       // AppointmentGetDTO getnew = new AppointmentGetDTO()
+            {
+                EndTime = end,
+                StartTime = start
+            };
+       // var httpnew = HttpHelper.ParseQuery("api/appointment/getAll", getnew);
+        _appointments = await Http.GetFromJsonAsync<List<AppointmentDto>>(QueryHelpers.AddQueryString("api/appointment/getAll", query));
+
+
+    }
+
+
+    async Task OnAppointmentClicked(AppointmentDto app)
+    {
+        var dialog = DialogService.Show<EditAppointmentDialog>("sasasdasd", new DialogParameters
+        {
+            ["Appointment"] = app,
+        });
+
+        await dialog.Result;
+        
+        StateHasChanged();
+    }
+
+    Task OnAddingNewAppointment(DateTime start, DateTime end )
+    {
+        _appointments.Add(new AppointmentDto { StartTime = start, EndTime = end, Note = "Wizyta" });
+
+        return Task.CompletedTask;
+    }
+
+    Task HandleReschedule(AppointmentDto appointment, DateTime newStart, DateTime newEnd)
+    {
+        appointment.StartTime = newStart;
+        appointment.EndTime = newEnd;
+
+        return Task.CompletedTask;
+    }
+
+    async Task OnOverflowAppointmentClick(DateTime day)
+    {
+        var dialog = DialogService.Show<OverflowAppointmentDialog>($"Appointments for {day.ToShortDateString()}", new DialogParameters
+        {
+            ["Appointments"] = _appointments,
+            ["SelectedDate"] = day,
+        });
+        await dialog.Result;
+
+        StateHasChanged();
+    } 
+}
+
+
