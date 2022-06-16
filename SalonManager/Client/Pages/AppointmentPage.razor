@@ -1,0 +1,109 @@
+﻿<h3>AppointmentPage</h3>
+
+@page "/appointmentpage"
+@using Microsoft.AspNetCore.WebUtilities
+@using Radzen.Blazor.Rendering
+@using SalonManager.Client.Dialogs
+@using SalonManager.Shared.ResponsesDTOs
+
+@inject DialogService DialogService
+@inject HttpClient Http
+
+@*<RadzenExample Name="Scheduler" AdditionalSourceCodePages=@(new List<string>() { "AddAppointmentPage.razor", "EditAppointmentPage.razor" })/>*@
+    
+    <RadzenScheduler  @ref=@scheduler  SlotRender=@OnSlotRender style="height: 768px;" TItem="AppointmentDto" Data=@appointments StartProperty="Start" EndProperty="End"
+        TextProperty="FullNameCastomer" SelectedIndex="2"
+        SlotSelect=@OnSlotSelect AppointmentSelect=@OnAppointmentSelect AppointmentRender=@OnAppointmentRender> 
+        <RadzenDayView />
+        <RadzenWeekView />
+        <RadzenMonthView MaxAppointmentsInSlot="2" />
+    </RadzenScheduler>
+
+
+@code {
+    RadzenScheduler<AppointmentDto> scheduler;
+
+    IList<AppointmentDto> appointments = new List<AppointmentDto>();
+
+
+    protected  override async Task OnInitializedAsync()
+    {
+        base.OnInitialized();
+
+
+        appointments  = await Http.GetFromJsonAsync<List<AppointmentDto>>("api/appointment/getAll");
+        await Task.Delay(500);
+        await scheduler.Reload();
+
+    }
+
+    async Task OnRequestNewData( )
+    {
+        DateTime start = DateTime.Today.AddMonths(-3) ;
+        DateTime end =DateTime.Today.AddMonths(5);
+
+        var query = new Dictionary<string,string>
+        {
+            ["StartTime" ] =start.ToString("MM/dd/yyyy HH:mm") ,
+            ["EndTime"]  = end.ToString("MM/dd/yyyy HH:mm")
+        };
+
+
+
+
+        appointments = await Http.GetFromJsonAsync<List<AppointmentDto>>(QueryHelpers.AddQueryString("api/appointment/getAll", query));
+        await Task.Delay(500);
+        await scheduler.Reload();
+
+    }
+    void OnSlotRender(SchedulerSlotRenderEventArgs args) 
+    {
+        // Highlight today in month view
+        if (args.View.Text == "Month" && args.Start.Date == DateTime.Today)
+        {
+            args.Attributes["style"] = "background: rgba(255,220,40,.2);";
+        }
+
+        // Highlight working hours (9-18)
+        if ((args.View.Text == "Week" || args.View.Text == "Day") && args.Start.Hour > 8 && args.Start.Hour < 19)
+        {
+            args.Attributes["style"] = "background: rgba(255,220,40,.2);";
+        }
+    }
+
+    async Task OnSlotSelect(SchedulerSlotSelectEventArgs args)
+    {
+
+        AppointmentDto data = await DialogService.OpenAsync<AddAppointmentPage>("Add Appointment",
+            new Dictionary<string, object> { { "Start", args.Start }, { "End", args.End } });
+
+        if (data != null)
+        {
+            appointments  = await Http.GetFromJsonAsync<List<AppointmentDto>>("api/appointment/getAll");
+
+            // Either call the Reload method or reassign the Data property of the Scheduler
+            
+            await scheduler.Reload();
+        }
+    }
+
+    async Task OnAppointmentSelect(SchedulerAppointmentSelectEventArgs<AppointmentDto> args)
+    {
+
+        await DialogService.OpenAsync<EditAppointmentPage>("Edit Appointment", new Dictionary<string, object> { { "AppointmentDto", args.Data } });
+         appointments  = await Http.GetFromJsonAsync<List<AppointmentDto>>("api/appointment/getAll");
+
+        await scheduler.Reload();
+    }
+
+    void OnAppointmentRender(SchedulerAppointmentRenderEventArgs<AppointmentDto> args)
+    {
+        // Never call StateHasChanged in AppointmentRender - would lead to infinite loop
+       
+
+        //if (args.Data.Note == "Birthday")
+        //{
+        //    args.Attributes["style"] = "background: red";
+        //}
+    }
+}

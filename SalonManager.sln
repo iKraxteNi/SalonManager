@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.2.32526.322
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalonManager.Server", "SalonManager\Server\SalonManager.Server.csproj", "{5C1683A0-15A4-428C-BB63-925671C24355}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalonManager.Server", "SalonManager\Server\SalonManager.Server.csproj", "{5C1683A0-15A4-428C-BB63-925671C24355}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalonManager.Client", "SalonManager\Client\SalonManager.Client.csproj", "{F62EBFEC-DE03-4733-ABF6-C017C28573C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalonManager.Client", "SalonManager\Client\SalonManager.Client.csproj", "{F62EBFEC-DE03-4733-ABF6-C017C28573C6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalonManager.Shared", "SalonManager\Shared\SalonManager.Shared.csproj", "{1F6C8030-2C9A-4D99-9B06-2E01171297FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalonManager.Shared", "SalonManager\Shared\SalonManager.Shared.csproj", "{1F6C8030-2C9A-4D99-9B06-2E01171297FB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

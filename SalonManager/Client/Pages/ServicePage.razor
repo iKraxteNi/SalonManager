@@ -1,0 +1,172 @@
+﻿@page "/servicepage"
+@using Microsoft.AspNetCore.WebUtilities
+@using Newtonsoft.Json
+@using SalonManager.Shared.ResponsesDTOs
+
+@inject HttpClient Http
+
+
+<h3>ServicePage</h3>
+
+<h1>DataGrid InLine Editing</h1>
+
+<p>This page demonstrates how to configure the Razden Blazor DataGrid for inline editing</p>
+
+
+
+<RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Add New Order" Click="@InsertRow" Disabled=@(orderToInsert != null) />
+<RadzenDataGrid @ref="ordersGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="Radzen.DataGridEditMode.Single"
+                Data="@orders" TItem="ServiceGetAllDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+    <Columns>
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Id" Title="ID" Width="120px" />
+
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Name" Title="Nazwa">
+            <EditTemplate Context="order">
+                <RadzenTextBox @bind-Value="order.Name" Style="width:100%; display: block" Name="Name" />
+                <RadzenRequiredValidator Text="Name is required" Component="Name" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Price" Title="Cena">
+            <Template Context="order">
+                @String.Format(new System.Globalization.CultureInfo("pl"), "{0:C}", order.Price)
+            </Template>
+            <EditTemplate Context="order">
+                <RadzenNumeric @bind-Value="order.Price" Style="width:100%" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Duration" Title="Czas min.">
+            <Template Context="order">
+                @String.Format(new System.Globalization.CultureInfo(""), "{0:C}", order.Duration)
+            </Template>
+            <EditTemplate Context="order">
+                <RadzenNumeric @bind-Value="order.Duration" Style="width:100%" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Note" Title=" Info">
+            <EditTemplate Context="order">
+                <RadzenTextBox @bind-Value="order.Note" Style="width:100%; display: block" Name="Info" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+            <Template Context="order">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="order">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@((args) => SaveRow(order))">
+                </RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@((args) => CancelEdit(order))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+            <Template Context="order">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="order">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
+
+
+@code {
+
+
+    RadzenDataGrid<ServiceGetAllDTO> ordersGrid;
+    IList<ServiceGetAllDTO> orders;
+    ServiceGetAllDTO orderToInsert;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitialized();
+
+        orders = await Http.GetFromJsonAsync<List<ServiceGetAllDTO>>("api/service/getAll");
+
+    }
+
+    async Task EditRow(ServiceGetAllDTO order)
+    {
+        await ordersGrid.EditRow(order);
+    }
+
+    async Task InsertRow()
+    {
+        orderToInsert = new ServiceGetAllDTO();
+        await ordersGrid.InsertRow(orderToInsert);
+    }
+
+    void OnUpdateRow(ServiceGetAllDTO order)
+    {
+        if (order == orderToInsert)
+        {
+            orderToInsert = null;
+        }
+
+        orders.Add(order);
+
+    }
+
+    async Task SaveRow(ServiceGetAllDTO order)
+    {
+        if (order == orderToInsert)
+        {
+            orderToInsert = null;
+        }
+
+        await Http.PostAsJsonAsync($"api/service/editadd", order);
+        orders = await Http.GetFromJsonAsync<List<ServiceGetAllDTO>>("api/service/getAll");
+
+        OnInitialized();
+    }
+
+    void CancelEdit(ServiceGetAllDTO order)
+    {
+        if (order == orderToInsert)
+        {
+            orderToInsert = null;
+        }
+
+        ordersGrid.CancelEditRow(order);
+    }
+
+
+    void OnCreateRow(ServiceGetAllDTO order)
+    {
+        orders.Add(order);
+    }
+
+
+    async Task DeleteRow(ServiceGetAllDTO order)
+    {
+        if (order == orderToInsert)
+        {
+            orderToInsert = null;
+        }
+
+        if (orders.Contains(order))
+        {
+
+            await Http.PostAsJsonAsync($"api/service/delete", order);
+            Thread.Sleep(200);
+
+            orders.Remove(order);
+            await ordersGrid.Reload();
+
+            OnInitialized();
+        }
+        else
+        {
+            ordersGrid.CancelEditRow(order);
+        }
+    }
+}

@@ -1,0 +1,109 @@
+﻿@using Radzen.Blazor.Rendering
+@using SalonManager.Shared.ResponsesDTOs
+@inject DialogService DialogService
+@inject HttpClient Http
+
+<RadzenTemplateForm TItem="AppointmentDto" Data="@model" Submit=@OnSubmit>
+    <div class="row" style="margin-bottom: 16px">
+        <div class="col-md-3">
+            <RadzenLabel Text="Klient" />
+        </div>
+        <div class="col">
+            <RadzenCard>
+                <h4 class="mb-4">Bind Value to model property</h4>
+                <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@customers @bind-Value=@model.CustomerId
+                                TextProperty="FullNameCastomer" ValueProperty="Id"  Class="w-100" Name="Customer" />
+
+            </RadzenCard>
+             <RadzenRequiredValidator Text=" is required" Component="Customer" />
+        </div>
+    </div>
+        <div class="row" style="margin-bottom: 16px">
+        <div class="col-md-3">
+            <RadzenLabel Text="Usługa" />
+        </div>
+        <div class="col">
+            <RadzenCard>
+                <h4 class="mb-4">Bind Value to model property</h4>
+                <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@services @bind-Value=@model.ServiceId
+                                TextProperty="Name" ValueProperty="Id"  Class="w-100" />
+            </RadzenCard>
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: 16px">
+        <div class="col-md-3">
+            <RadzenLabel Text="Notatka" />
+        </div>
+        <div class="col">
+            <RadzenTextBox @bind-Value="@model.Note" Name="Note" />
+            <RadzenRequiredValidator Text="Note is required" Component="Note" />
+        </div>
+    </div>
+
+    <div class="row" style="margin-bottom: 16px">
+        <div class="col-md-3">
+            <RadzenLabel Text="Start" />
+        </div>
+        <div class="col">
+            <RadzenDatePicker @bind-Value="@model.Start" Name="Start" ShowTime="true" />
+            <RadzenRequiredValidator Text="Start is required" Component="Start" />
+        </div>
+    </div>
+    <div class="row" style="margin-bottom: 16px">
+        <div class="col-md-3">
+            <RadzenLabel Text="End" />
+        </div>
+        <div class="col">
+            <RadzenDatePicker Name="End" @bind-Value="@model.End" ShowTime="true" />
+            <RadzenRequiredValidator Component="End" Text="End is required" />
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col">
+            <RadzenButton ButtonType="ButtonType.Submit" Text="Save" />
+        </div>
+    </div>
+</RadzenTemplateForm>
+@code {
+
+
+    [Parameter]
+    public DateTime Start { get; set; }
+
+    [Parameter]
+    public DateTime End { get; set; }
+
+    AppointmentDto model = new AppointmentDto();
+
+    IList<CustomerGetDTO> customers;
+    IList<ServiceAllPageDTO> services;
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitialized();
+
+
+        customers = await Http.GetFromJsonAsync<List<CustomerGetDTO>>("api/customer/getAll");
+        services = await Http.GetFromJsonAsync<List<ServiceAllPageDTO>>("api/service/getAll");
+
+    }
+
+    protected override void OnParametersSet()
+    {
+        model.Start = Start;
+        model.End = End;
+        model.Id = 0;
+    }
+        async  Task SendData(AppointmentDto model)
+    {
+        await Http.PostAsJsonAsync($"api/appointment/editadd", model);
+    }
+
+    void OnSubmit(AppointmentDto model)
+    {
+        
+        SendData(model);
+        DialogService.Close(model);
+    }
+}

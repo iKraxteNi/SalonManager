@@ -37,6 +37,7 @@ builder.Services.AddRazorPages();
 //builder.Services.AddSingleton<AppointmentService>();
 builder.Services.AddTransient<AppointmentService>();
 builder.Services.AddTransient<ServiceService>();
+builder.Services.AddTransient<CustomerService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

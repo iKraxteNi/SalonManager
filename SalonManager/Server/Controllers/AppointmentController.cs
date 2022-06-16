@@ -6,7 +6,7 @@ using SalonManager.Shared.ResponsesDTOs;
 
 namespace SalonManager.Server.Controllers
 {
-   // [Route("api/appointment")]
+    [Route("api/appointment")]
     [ApiController]
     public class AppointmentController : ControllerBase
     {
@@ -19,7 +19,7 @@ namespace SalonManager.Server.Controllers
 
 
         // GET: api/<ValuesController>}/{start}&{end}
-        [Route("api/appointment/getAll")]
+        [Route("getAll")]
         [HttpGet]
         public IActionResult GetAll([FromQuery] AppointmentGetDTO query)
         {
@@ -31,6 +31,14 @@ namespace SalonManager.Server.Controllers
         //    var appointments = _appointmentService.GetAllAppointments();
         //    return (IEnumerable<AppointmentDto>)Ok(appointments);
         //}
+        [HttpPost]
+        [Route("editadd")]
+        public async Task<IActionResult> Edit([FromBody] AppointmentDto model)
+        {
+
+            _appointmentService.EditAppointment(model);
+            return Ok();
+        }
     }
 
 

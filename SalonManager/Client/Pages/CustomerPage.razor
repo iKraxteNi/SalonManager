@@ -1,0 +1,173 @@
+﻿@page "/customerpage"
+@using Microsoft.AspNetCore.WebUtilities
+@using Newtonsoft.Json
+@using SalonManager.Shared.ResponsesDTOs
+
+@inject HttpClient Http
+
+
+<h3>CustomerPage</h3>
+
+<h1>DataGrid InLine Editing</h1>
+
+<p>This page demonstrates how to configure the Razden Blazor DataGrid for inline editing</p>
+
+ 
+    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Add New Order" Click="@InsertRow" Disabled=@(orderToInsert != null) />
+    <RadzenDataGrid  @ref="ordersGrid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true" EditMode="Radzen.DataGridEditMode.Single"
+                Data="@orders" TItem="CustomerGetDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+        <Columns>
+            <RadzenDataGridColumn TItem="CustomerGetDTO" Property="Id" Title="ID" Width="120px" />
+            
+            <RadzenDataGridColumn TItem="CustomerGetDTO" Property="FirstName" Title="Imię">
+                <EditTemplate Context="order">
+                    <RadzenTextBox @bind-Value="order.FirstName" Style="width:100%; display: block" Name="FirstName" />
+                    <RadzenRequiredValidator Text="Name is required" Component="FirstName" Popup="true" />
+                </EditTemplate>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="CustomerGetDTO" Property="LastName" Title="Nazwisko">
+                <EditTemplate Context="order">
+                    <RadzenTextBox @bind-Value="order.LastName" Style="width:100%; display: block" Name="LastName" />
+                    <RadzenRequiredValidator Component="LastName" Popup="true" Text="nowyt dej" Visible="true" DefaultValue="0" /> @*Problem z walidacją *@
+                    <RadzenRequiredValidator Text="Name is required" Component="LastName" Popup="true" DefaultValue="null" />
+                </EditTemplate>
+            </RadzenDataGridColumn>
+
+             <RadzenDataGridColumn TItem="CustomerGetDTO" Property="PhoneNumber" Title="Nr.Telefonu">
+                <EditTemplate Context="order">
+                    <RadzenTextBox @bind-Value="order.PhoneNumber" Style="width:100%; display: block" Name="PhoneNumber" />
+                    <RadzenRequiredValidator Text="PhoneNumber is required" Component="PhoneNumber" Popup="true" Style="display:block" />
+                </EditTemplate>
+            </RadzenDataGridColumn>                   
+
+                        <RadzenDataGridColumn TItem="CustomerGetDTO" Property="Note" Title="Info">
+                <EditTemplate Context="order">
+                    <RadzenTextBox @bind-Value="order.Note" Style="width:100%; display: block" Name="Info" />
+                </EditTemplate>
+            </RadzenDataGridColumn>
+
+            <RadzenDataGridColumn TItem="CustomerGetDTO" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+                <Template Context="order">
+                    <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
+                    </RadzenButton>
+                </Template>
+                <EditTemplate Context="order">
+                    <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@((args) => SaveRow(order))">
+                    </RadzenButton>
+                    <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@((args) => CancelEdit(order))">
+                    </RadzenButton>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+            <RadzenDataGridColumn TItem="CustomerGetDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+                <Template Context="order">
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))"  @onclick:stopPropagation="true">
+                    </RadzenButton>
+                </Template>
+                <EditTemplate Context="order">
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))">
+                    </RadzenButton>
+                </EditTemplate>
+            </RadzenDataGridColumn>
+        </Columns>
+    </RadzenDataGrid>
+    
+
+
+@code {
+
+
+    RadzenDataGrid<CustomerGetDTO> ordersGrid ;
+    IList<CustomerGetDTO> orders  ;
+    CustomerGetDTO orderToInsert;
+
+
+
+    protected  override async Task OnInitializedAsync()
+    {
+        base.OnInitialized();
+
+
+        orders  = await Http.GetFromJsonAsync<List<CustomerGetDTO>>("api/customer/getAll");
+
+
+    }
+
+    async Task EditRow(CustomerGetDTO order)
+    {
+        await ordersGrid.EditRow(order);
+    }
+
+    async Task InsertRow()
+    {
+        orderToInsert = new CustomerGetDTO();
+        await ordersGrid.InsertRow(orderToInsert);
+    }
+
+    void OnUpdateRow(CustomerGetDTO order)
+    {
+        if (order == orderToInsert)
+        {
+            orderToInsert = null;
+        }
+
+        orders.Add(order);
+    }
+
+    async Task SaveRow(CustomerGetDTO order)
+    {
+        if (order == orderToInsert)
+        {
+            orderToInsert = null;
+        }
+
+        await Http.PostAsJsonAsync($"api/customer/editadd", order);
+        orders  = await Http.GetFromJsonAsync<List<CustomerGetDTO>>("api/customer/getAll");
+
+        OnInitialized();
+    }
+
+    void CancelEdit(CustomerGetDTO order)
+    {
+        if (order == orderToInsert)
+        {
+            orderToInsert = null;
+        }
+
+        ordersGrid.CancelEditRow(order);
+    }
+
+
+    void OnCreateRow(CustomerGetDTO order)
+    {
+        orders.Add(order);
+
+    }
+    
+    
+    async Task DeleteRow(CustomerGetDTO order)
+    {
+        if (order == orderToInsert)
+        {
+            orderToInsert = null;
+        }
+
+        if (orders.Contains(order))
+        {
+
+            await Http.PostAsJsonAsync($"api/customer/delete", order);
+            Thread.Sleep(200);
+
+            orders.Remove(order);
+            await ordersGrid.Reload();
+
+            OnInitialized();
+        }
+        else
+        {
+            ordersGrid.CancelEditRow(order);
+        }
+    }
+}
+
+
