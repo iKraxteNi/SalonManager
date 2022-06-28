@@ -6,45 +6,46 @@
 @inject HttpClient Http
 
 
-<h3>ServicePage</h3>
-
-<h1>DataGrid InLine Editing</h1>
-
-<p>This page demonstrates how to configure the Razden Blazor DataGrid for inline editing</p>
 
 
+<h1>Tabela świadczonych usług</h1>
 
-<RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Add New Order" Click="@InsertRow" Disabled=@(orderToInsert != null) />
+<p>Podgląd wraz z edycją</p>
+
+
+
+<RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Dodaj Usługę" Click="@InsertRow" Disabled=@(orderToInsert != null) />
 <RadzenDataGrid @ref="ordersGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="Radzen.DataGridEditMode.Single"
                 Data="@orders" TItem="ServiceGetAllDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
     <Columns>
-        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Id" Title="ID" Width="120px" />
+        
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Id" Title="ID" Width="50px" />
 
-        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Name" Title="Nazwa">
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Name" Title="Nazwa"  MinWidth="200px"  >
             <EditTemplate Context="order">
-                <RadzenTextBox @bind-Value="order.Name" Style="width:100%; display: block" Name="Name" />
+                <RadzenTextBox @bind-Value="order.Name" Style="width:100% ; display: block" Name="Name" />
                 <RadzenRequiredValidator Text="Name is required" Component="Name" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Price" Title="Cena">
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Price" Title="Cena"   Width="70px">
             <Template Context="order">
-                @String.Format(new System.Globalization.CultureInfo("pl"), "{0:C}", order.Price)
+                @String.Format(new System.Globalization.CultureInfo("PLN"), "{0:C}", order.Price)
             </Template>
             <EditTemplate Context="order">
                 <RadzenNumeric @bind-Value="order.Price" Style="width:100%" />
             </EditTemplate>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Duration" Title="Czas min.">
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Duration" Title="Czas min."  Width="80px">
             <Template Context="order">
-                @String.Format(new System.Globalization.CultureInfo(""), "{0:C}", order.Duration)
+                @String.Format(new System.Globalization.CultureInfo("min"), "{0:C}", order.Duration)
             </Template>
             <EditTemplate Context="order">
-                <RadzenNumeric @bind-Value="order.Duration" Style="width:100%" />
+                <RadzenNumeric @bind-Value="order.Duration" Style="width:100%;" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Note" Title=" Info">
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Note" Title=" Info" MinWidth="100px">
             <EditTemplate Context="order">
                 <RadzenTextBox @bind-Value="order.Note" Style="width:100%; display: block" Name="Info" />
             </EditTemplate>
@@ -68,7 +69,7 @@
                 </RadzenButton>
             </Template>
             <EditTemplate Context="order">
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))" >
                 </RadzenButton>
             </EditTemplate>
         </RadzenDataGridColumn>

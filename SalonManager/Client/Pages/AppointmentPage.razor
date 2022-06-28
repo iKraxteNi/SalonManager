@@ -77,14 +77,18 @@
         AppointmentDto data = await DialogService.OpenAsync<AddAppointmentPage>("Add Appointment",
             new Dictionary<string, object> { { "Start", args.Start }, { "End", args.End } });
 
-        if (data != null)
-        {
-            appointments  = await Http.GetFromJsonAsync<List<AppointmentDto>>("api/appointment/getAll");
+        //if (data != null)
+        //{
+        //    appointments  = await Http.GetFromJsonAsync<List<AppointmentDto>>("api/appointment/getAll");
 
-            // Either call the Reload method or reassign the Data property of the Scheduler
-            
-            await scheduler.Reload();
-        }
+        //    // Either call the Reload method or reassign the Data property of the Scheduler
+
+        //    await scheduler.Reload();
+        //}
+        await Task.Delay(500);
+        appointments  = await Http.GetFromJsonAsync<List<AppointmentDto>>("api/appointment/getAll");
+        await Task.Delay(500);
+        await scheduler.Reload();
     }
 
     async Task OnAppointmentSelect(SchedulerAppointmentSelectEventArgs<AppointmentDto> args)
@@ -92,7 +96,8 @@
 
         await DialogService.OpenAsync<EditAppointmentPage>("Edit Appointment", new Dictionary<string, object> { { "AppointmentDto", args.Data } });
          appointments  = await Http.GetFromJsonAsync<List<AppointmentDto>>("api/appointment/getAll");
-
+         
+        await Task.Delay(500);
         await scheduler.Reload();
     }
 

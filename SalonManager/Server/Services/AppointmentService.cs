@@ -20,8 +20,9 @@ namespace SalonManager.Server.Services
 
             //var employees = queryable.ToList();
             //employees.ForEach(u => u.Role = GetUserRole(u));
+            
 
-            var AllAppointmentsNoflitr = _dbContext.Appointments.Select(x => new AppointmentDto()
+           var AllAppointmentsNoflitr = _dbContext.Appointments.Where(p => p.IsDeleted == false).Select(x => new AppointmentDto()
             {
                 Id = x.Id,
                 End = x.EndTime,
@@ -63,6 +64,15 @@ namespace SalonManager.Server.Services
                 var appToUpdate = _dbContext.Appointments.Where(p => p.Id == model.Id).FirstOrDefault();
                 _dbContext.Entry(appToUpdate).CurrentValues.SetValues(model);
             }
+            _dbContext.SaveChanges();
+
+        }
+        public void DelateAppointment(long Id)
+        {
+
+            var delete = _dbContext.Appointments.Where(x => x.Id == Id).FirstOrDefault();
+
+            _dbContext.Entry(delete).CurrentValues.SetValues(delete.IsDeleted = true);
             _dbContext.SaveChanges();
 
         }

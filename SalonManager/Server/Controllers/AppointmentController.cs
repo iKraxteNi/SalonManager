@@ -39,6 +39,14 @@ namespace SalonManager.Server.Controllers
             _appointmentService.EditAppointment(model);
             return Ok();
         }
+        [HttpPost]
+        [Route("delete")]
+        public async Task<IActionResult> Delete([FromBody] AppointmentDto model)
+        {
+            long id = model.Id;
+            _appointmentService.DelateAppointment(id);
+            return Ok();
+        }
     }
 
 

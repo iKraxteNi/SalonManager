@@ -32,7 +32,8 @@ namespace SalonManager.Server.Controllers
             long id = order.Id;
             _serviceService.DelateService(id);
             return Ok();
-        }
+        } 
+
         [HttpPost]
         [Route("editadd")]
         public async Task<IActionResult> Edit([FromBody] ServiceEditDTO order)

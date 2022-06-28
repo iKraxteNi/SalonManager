@@ -21,6 +21,7 @@ namespace SalonManager.Server.Services
                 Id = p.Id,
                 Name = p.Name,
                 Price = p.Price,
+                Duration = p.Duration,
                 Note = p.Note,
                 IsDelate = p.IsDelate
             }).ToList();
