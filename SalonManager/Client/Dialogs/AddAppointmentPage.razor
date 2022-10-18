@@ -10,12 +10,12 @@
         </div>
         <div class="col">
             <RadzenCard>
-                <h4 class="mb-4">Bind Value to model property</h4>
-                <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@customers @bind-Value=@model.CustomerId
-                                TextProperty="FullNameCastomer" ValueProperty="Id"  Class="w-100" Name="Customer" />
-
+                <h4 class="mb-4">Wybierz klienta</h4>
+                <RadzenDropDown AllowClear="false"  AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@customers @bind-Value=@model.CustomerId
+                                TextProperty="FullNameCastomer" ValueProperty="Id"  Class="w-100" Name="Customer"  />
             </RadzenCard>
-             <RadzenRequiredValidator Text=" is required" Component="Customer" />
+
+            <RadzenNumericRangeValidator Component="Customer" Min="1" />     
         </div>
     </div>
         <div class="row" style="margin-bottom: 16px">
@@ -24,10 +24,12 @@
         </div>
         <div class="col">
             <RadzenCard>
-                <h4 class="mb-4">Bind Value to model property</h4>
+                <h4 class="mb-4">Wybierz usługę</h4>
                 <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@services @bind-Value=@model.ServiceId
                                 TextProperty="Name" ValueProperty="Id"  Class="w-100" />
             </RadzenCard>
+
+            <RadzenNumericRangeValidator Component="Customer" Min="1" />
         </div>
     </div>
     <div class="row" style="margin-bottom: 16px">
@@ -36,7 +38,7 @@
         </div>
         <div class="col">
             <RadzenTextBox @bind-Value="@model.Note" Name="Note" />
-            <RadzenRequiredValidator Text="Note is required" Component="Note" />
+     
         </div>
     </div>
 
@@ -46,7 +48,7 @@
         </div>
         <div class="col">
             <RadzenDatePicker @bind-Value="@model.Start" Name="Start" ShowTime="true" />
-            <RadzenRequiredValidator Text="Start is required" Component="Start" />
+            <RadzenRequiredValidator  Component="Start" Text="Proszę podać czas rozpoczęcia" />
         </div>
     </div>
     <div class="row" style="margin-bottom: 16px">
@@ -55,7 +57,7 @@
         </div>
         <div class="col">
             <RadzenDatePicker Name="End" @bind-Value="@model.End" ShowTime="true" />
-            <RadzenRequiredValidator Component="End" Text="End is required" />
+            <RadzenRequiredValidator Component="End" Text="Proszę podać czas zakończenia" />
         </div>
     </div>
     <div class="row">
