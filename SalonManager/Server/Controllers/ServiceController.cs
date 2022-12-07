@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SalonManager.Server.Services;
+using SalonManager.Server.Interfaces;
 using SalonManager.Shared.ResponsesDTOs;
 
 
@@ -9,9 +10,9 @@ namespace SalonManager.Server.Controllers
     [ApiController]
     public class ServiceController : ControllerBase
     {
-        private readonly ServiceService _serviceService;
+        private readonly IServiceService _serviceService;
 
-        public ServiceController(ServiceService serviceService)
+        public ServiceController(IServiceService serviceService)
         {
             _serviceService = serviceService;
         }

@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using SalonManager.Server.Data;
 using SalonManager.Server.Models;
 using SalonManager.Server.Services;
+using SalonManager.Server.Interfaces;
+
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -35,9 +37,9 @@ builder.Services.AddRazorPages();
 
 //builder.Services.AddSingleton<ServiceService>();
 //builder.Services.AddSingleton<AppointmentService>();
-builder.Services.AddTransient<AppointmentService>();
-builder.Services.AddTransient<ServiceService>();
-builder.Services.AddTransient<CustomerService>();
+builder.Services.AddTransient<IAppointmentService, AppointmentService>();
+builder.Services.AddTransient<IServiceService, ServiceService>();
+builder.Services.AddTransient<ICustomerService, CustomerService>();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

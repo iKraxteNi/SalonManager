@@ -1,10 +1,11 @@
 ﻿using SalonManager.Entities;
 using SalonManager.Server.Data;
+using SalonManager.Server.Interfaces;
 using SalonManager.Shared.ResponsesDTOs;
 
 namespace SalonManager.Server.Services
 {
-    public class CustomerService
+    public class CustomerService : ICustomerService
     {
 
         public ApplicationDbContext _dbContext;
@@ -15,7 +16,7 @@ namespace SalonManager.Server.Services
         }
 
         public List<CustomerGetDTO> GetAllCustomers()
-        {                                      
+        {
             var customers = _dbContext.Customers.Where(p => p.IsDelate == false).Select(p => new CustomerGetDTO()
             {
                 Id = p.Id,
@@ -25,7 +26,7 @@ namespace SalonManager.Server.Services
                 PhoneNumber = p.PhoneNumber,
                 Note = p.Note,
                 IsDelate = p.IsDelate,
-                
+
             }).ToList();
 
             //service

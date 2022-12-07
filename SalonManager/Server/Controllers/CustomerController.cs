@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SalonManager.Server.Services;
+using SalonManager.Server.Interfaces;
 using SalonManager.Shared.ResponsesDTOs;
+
 
 namespace SalonManager.Server.Controllers
 {
@@ -9,9 +11,9 @@ namespace SalonManager.Server.Controllers
     [ApiController]
     public class CustomerController : ControllerBase
     {
-        private readonly CustomerService _customerService;
+        private readonly ICustomerService _customerService;
 
-        public CustomerController(CustomerService customerService)
+        public CustomerController(ICustomerService customerService)
         {
             _customerService = customerService;
         }

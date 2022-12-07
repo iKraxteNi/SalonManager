@@ -1,11 +1,11 @@
-﻿
-using SalonManager.Entities;
+﻿using SalonManager.Entities;
 using SalonManager.Server.Data;
+using SalonManager.Server.Interfaces;
 using SalonManager.Shared.ResponsesDTOs;
 
 namespace SalonManager.Server.Services
 {
-    public class ServiceService
+    public class ServiceService : IServiceService
     {
         public ApplicationDbContext _dbContext;
 

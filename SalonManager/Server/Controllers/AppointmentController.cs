@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SalonManager.Server.Interfaces;
 using SalonManager.Server.Services;
 
 using SalonManager.Shared.ResponsesDTOs;
@@ -10,8 +11,8 @@ namespace SalonManager.Server.Controllers
     [ApiController]
     public class AppointmentController : ControllerBase
     {
-        private readonly AppointmentService _appointmentService;
-        public AppointmentController(AppointmentService appointmentService)
+        private readonly IAppointmentService _appointmentService;
+        public AppointmentController(IAppointmentService appointmentService)
         {
             _appointmentService = appointmentService;
         }

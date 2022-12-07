@@ -1,11 +1,11 @@
-﻿
-using SalonManager.Entities;
+﻿using SalonManager.Entities;
 using SalonManager.Server.Data;
+using SalonManager.Server.Interfaces;
 using SalonManager.Shared.ResponsesDTOs;
 
 namespace SalonManager.Server.Services
 {
-    public class AppointmentService
+    public class AppointmentService : IAppointmentService
     {
         public ApplicationDbContext _dbContext;
 
@@ -20,9 +20,9 @@ namespace SalonManager.Server.Services
 
             //var employees = queryable.ToList();
             //employees.ForEach(u => u.Role = GetUserRole(u));
-            
 
-           var AllAppointmentsNoflitr = _dbContext.Appointments.Where(p => p.IsDeleted == false).Select(x => new AppointmentDto()
+
+            var AllAppointmentsNoflitr = _dbContext.Appointments.Where(p => p.IsDeleted == false).Select(x => new AppointmentDto()
             {
                 Id = x.Id,
                 End = x.EndTime,
@@ -32,7 +32,7 @@ namespace SalonManager.Server.Services
 
             }).ToList();
 
-           // var AllAppointments = AllAppointmentsNoflitr.Where(x => x.StartTime.Date <=end && start <= x.EndTime.Date);
+            // var AllAppointments = AllAppointmentsNoflitr.Where(x => x.StartTime.Date <=end && start <= x.EndTime.Date);
 
             return new List<AppointmentDto>(AllAppointmentsNoflitr);
         }
@@ -44,15 +44,15 @@ namespace SalonManager.Server.Services
             {
                 var customerName = _dbContext.Customers.Where(p => p.Id == model.CustomerId).FirstOrDefault();
 
-                var NewAppointment= new Appointment
+                var NewAppointment = new Appointment
                 {
                     StartTime = model.Start,
                     EndTime = model.End,
                     CustomerId = model.CustomerId,
                     ServiceId = model.ServiceId,
                     Note = model.Note,
-                    FullNameCastomer = customerName.FirstName + " "+ customerName.LastName,
-                    
+                    FullNameCastomer = customerName.FirstName + " " + customerName.LastName,
+
 
 
                 };
