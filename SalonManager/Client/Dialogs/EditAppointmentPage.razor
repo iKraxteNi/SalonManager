@@ -14,7 +14,7 @@
             <RadzenCard>
                 <h4 class="mb-4">Bind Value to model property</h4>
                 <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@customers @bind-Value=@model.CustomerId
-                                TextProperty="FullNameCastomer" ValueProperty="Id"  Class="w-100" />
+                                TextProperty="FullNameCastomer" ValueProperty="Id"  Class="w-100" Name="Customer" />
             </RadzenCard>
 
             <RadzenNumericRangeValidator Component="Customer" Min="1" />

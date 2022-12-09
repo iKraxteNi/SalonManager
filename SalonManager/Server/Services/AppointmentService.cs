@@ -1,4 +1,5 @@
-﻿using SalonManager.Entities;
+﻿using AutoMapper;
+using SalonManager.Entities;
 using SalonManager.Server.Data;
 using SalonManager.Server.Interfaces;
 using SalonManager.Shared.ResponsesDTOs;
@@ -8,33 +9,32 @@ namespace SalonManager.Server.Services
     public class AppointmentService : IAppointmentService
     {
         public ApplicationDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public AppointmentService(ApplicationDbContext dbContext)
+        public AppointmentService(ApplicationDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
         public List<AppointmentDto> GetAllAppointments(AppointmentGetDTO query)
         {
-            //var queryable = _dbContext.Users.AsNoTracking();
-            //queryable = ApplyGetAllFilter(query, queryable);
 
-            //var employees = queryable.ToList();
-            //employees.ForEach(u => u.Role = GetUserRole(u));
+            //var AllAppointmentsNoflitr = _dbContext.Appointments.Where(p => p.IsDeleted == false).Select(x => new AppointmentDto()
+            //{
+            //    Id = x.Id,
+            //    End = x.EndTime,
+            //    Start = x.StartTime,
+            //    FullNameCastomer = x.FullNameCastomer,
+            //    Note = x.Note
+
+            //}).ToList();
+
+            // return new List<AppointmentDto>(AllAppointmentsNoflitr);
+
+            //used AutoMapper
 
 
-            var AllAppointmentsNoflitr = _dbContext.Appointments.Where(p => p.IsDeleted == false).Select(x => new AppointmentDto()
-            {
-                Id = x.Id,
-                End = x.EndTime,
-                Start = x.StartTime,
-                FullNameCastomer = x.FullNameCastomer,
-                Note = x.Note
-
-            }).ToList();
-
-            // var AllAppointments = AllAppointmentsNoflitr.Where(x => x.StartTime.Date <=end && start <= x.EndTime.Date);
-
-            return new List<AppointmentDto>(AllAppointmentsNoflitr);
+            return (_dbContext.Appointments.Where(p => p.IsDeleted == false).Select(p => _mapper.Map<AppointmentDto>(p)).ToList());
         }
 
         public void EditAppointment(AppointmentDto model)
@@ -52,8 +52,6 @@ namespace SalonManager.Server.Services
                     ServiceId = model.ServiceId,
                     Note = model.Note,
                     FullNameCastomer = customerName.FirstName + " " + customerName.LastName,
-
-
 
                 };
 

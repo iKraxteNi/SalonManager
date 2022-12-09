@@ -1,4 +1,5 @@
-﻿using SalonManager.Entities;
+﻿using AutoMapper;
+using SalonManager.Entities;
 using SalonManager.Server.Data;
 using SalonManager.Server.Interfaces;
 using SalonManager.Shared.ResponsesDTOs;
@@ -8,26 +9,32 @@ namespace SalonManager.Server.Services
     public class ServiceService : IServiceService
     {
         public ApplicationDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public ServiceService(ApplicationDbContext dbContext)
+        public ServiceService(ApplicationDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
         public List<ServiceGetAllDTO> GetAllService()
-        {                                       //_dbContext.Servicess.Select(x => new ServiceGetAllDTO()
-            var service = _dbContext.Servicess.Where(p => p.IsDelate == false).Select(p => new ServiceGetAllDTO()
-            {
-                Id = p.Id,
-                Name = p.Name,
-                Price = p.Price,
-                Duration = p.Duration,
-                Note = p.Note,
-                IsDelate = p.IsDelate
-            }).ToList();
+        {                                       //_dbContext.Servicess.Select(x => new ServiceGetAllDTO() 
+            //var service = _dbContext.Servicess.Where(p => p.IsDelate == false).Select(p => new ServiceGetAllDTO()
+            //{
+            //    Id = p.Id,
+            //    Name = p.Name,
+            //    Price = p.Price,
+            //    Duration = p.Duration,
+            //    Note = p.Note,
+            //    IsDelate = p.IsDelate
+            //}).ToList();
 
-            //service
-            return new List<ServiceGetAllDTO>(service);
+            ////service
+            //return new List<ServiceGetAllDTO>(service);
+
+            //used AutoMapper
+
+            return (_dbContext.Servicess.Where(p => p.IsDelate == false).Select(p => _mapper.Map< ServiceGetAllDTO>(p)).ToList());
         }
 
         public void DelateService(long Id)

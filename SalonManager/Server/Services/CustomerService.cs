@@ -18,8 +18,6 @@ namespace SalonManager.Server.Services
             _mapper = mapper;
         }
 
- 
-
         public List<CustomerGetDTO> GetAllCustomers()
         {
             //var customers = _dbContext.Customers.Where(p => p.IsDelate == false).Select(p => new CustomerGetDTO()
@@ -39,7 +37,7 @@ namespace SalonManager.Server.Services
 
             // used automapper
 
-             return (_dbContext.Customers.Where(p => p.IsDelate == false).Select(p => _mapper.Map<CustomerGetDTO>(p)).ToList());
+            return (_dbContext.Customers.Where(p => p.IsDelate == false).Select(p => _mapper.Map<CustomerGetDTO>(p)).ToList());
         }
 
         public void DelateCustomers(long Id)
