@@ -34,9 +34,8 @@ builder.Services.AddAuthentication()
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
+builder.Services.AddAutoMapper(typeof(Program).Assembly);
 
-//builder.Services.AddSingleton<ServiceService>();
-//builder.Services.AddSingleton<AppointmentService>();
 builder.Services.AddTransient<IAppointmentService, AppointmentService>();
 builder.Services.AddTransient<IServiceService, ServiceService>();
 builder.Services.AddTransient<ICustomerService, CustomerService>();

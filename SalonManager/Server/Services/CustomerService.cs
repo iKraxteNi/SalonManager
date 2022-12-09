@@ -1,4 +1,5 @@
-﻿using SalonManager.Entities;
+﻿using AutoMapper;
+using SalonManager.Entities;
 using SalonManager.Server.Data;
 using SalonManager.Server.Interfaces;
 using SalonManager.Shared.ResponsesDTOs;
@@ -9,28 +10,36 @@ namespace SalonManager.Server.Services
     {
 
         public ApplicationDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public CustomerService(ApplicationDbContext dbContext)
+        public CustomerService(ApplicationDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
+
+ 
 
         public List<CustomerGetDTO> GetAllCustomers()
         {
-            var customers = _dbContext.Customers.Where(p => p.IsDelate == false).Select(p => new CustomerGetDTO()
-            {
-                Id = p.Id,
-                FirstName = p.FirstName,
-                LastName = p.LastName,
-                FullNameCastomer = p.FirstName + " " + p.LastName,
-                PhoneNumber = p.PhoneNumber,
-                Note = p.Note,
-                IsDelate = p.IsDelate,
+            //var customers = _dbContext.Customers.Where(p => p.IsDelate == false).Select(p => new CustomerGetDTO()
+            //{
+            //    Id = p.Id,
+            //    FirstName = p.FirstName,
+            //    LastName = p.LastName,
+            //    FullNameCastomer = p.FirstName + " " + p.LastName,
+            //    PhoneNumber = p.PhoneNumber,
+            //    Note = p.Note,
+            //    IsDelate = p.IsDelate,
 
-            }).ToList();
+            //}).ToList();
 
-            //service
-            return new List<CustomerGetDTO>(customers);
+            ////service
+            //return new List<CustomerGetDTO>(customers);
+
+            // used automapper
+
+             return (_dbContext.Customers.Where(p => p.IsDelate == false).Select(p => _mapper.Map<CustomerGetDTO>(p)).ToList());
         }
 
         public void DelateCustomers(long Id)
@@ -62,8 +71,8 @@ namespace SalonManager.Server.Services
             }
             else
             {
-                var cusToUpdate = _dbContext.Customers.Where(p => p.Id == model.Id).FirstOrDefault();
-                _dbContext.Entry(cusToUpdate).CurrentValues.SetValues(model);
+                var customerToUpdate = _dbContext.Customers.Where(p => p.Id == model.Id).FirstOrDefault();
+                _dbContext.Entry(customerToUpdate).CurrentValues.SetValues(model);
             }
             _dbContext.SaveChanges();
 

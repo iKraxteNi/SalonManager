@@ -27,19 +27,15 @@ namespace SalonManager.Server.Controllers
             var response = _appointmentService.GetAllAppointments(query);
             return Ok(response);
         }
-        //public IEnumerable<AppointmentDto> GetAllAppointments()
-        //{
-        //    var appointments = _appointmentService.GetAllAppointments();
-        //    return (IEnumerable<AppointmentDto>)Ok(appointments);
-        //}
+
         [HttpPost]
         [Route("editadd")]
         public async Task<IActionResult> Edit([FromBody] AppointmentDto model)
         {
-
             _appointmentService.EditAppointment(model);
             return Ok();
         }
+
         [HttpPost]
         [Route("delete")]
         public async Task<IActionResult> Delete([FromBody] AppointmentDto model)
