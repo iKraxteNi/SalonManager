@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
+using SalonManager.Entities;
 using SalonManager.Server.Interfaces;
-using SalonManager.Server.Services;
 
 using SalonManager.Shared.ResponsesDTOs;
 
@@ -12,9 +13,13 @@ namespace SalonManager.Server.Controllers
     public class AppointmentController : ControllerBase
     {
         private readonly IAppointmentService _appointmentService;
-        public AppointmentController(IAppointmentService appointmentService)
+        private readonly IMapper _mapper;
+
+
+        public AppointmentController(IAppointmentService appointmentService, IMapper mapper)
         {
             _appointmentService = appointmentService;
+            _mapper = mapper;
         }
 
 
@@ -32,7 +37,7 @@ namespace SalonManager.Server.Controllers
         [Route("editadd")]
         public async Task<IActionResult> Edit([FromBody] AppointmentDto model)
         {
-            _appointmentService.EditAppointment(model);
+            _appointmentService.EditAppointment(_mapper.Map<Appointment>(model));
             return Ok();
         }
 

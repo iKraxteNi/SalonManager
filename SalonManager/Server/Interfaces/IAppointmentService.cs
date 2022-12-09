@@ -1,11 +1,12 @@
-﻿using SalonManager.Shared.ResponsesDTOs;
+﻿using SalonManager.Entities;
+using SalonManager.Shared.ResponsesDTOs;
 
 namespace SalonManager.Server.Interfaces
 {
     public interface IAppointmentService
     {
         void DelateAppointment(long Id);
-        void EditAppointment(AppointmentDto model);
+        void EditAppointment(Appointment model);
         List<AppointmentDto> GetAllAppointments(AppointmentGetDTO query);
     }
 }

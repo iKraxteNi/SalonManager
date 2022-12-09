@@ -10,12 +10,13 @@ namespace SalonManager.Server.Helper
     {
         public AutoMapperProfiles()
         {
-            CreateMap<Appointment, AppointmentDto>().ReverseMap()
+            CreateMap<AppointmentDto,Appointment >()
                 .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.End))
-                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.Start));
-            CreateMap<AppointmentDto,Appointment >().ReverseMap()
-                .ForMember(dest => dest.End, opt => opt.MapFrom(src => src.EndTime))
-                .ForMember(dest => dest.Start, opt => opt.MapFrom(src => src.StartTime)).ReverseMap();
+                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.Start)).ReverseMap();
+
+            CreateMap<AppointmentDto, AppointmentEditDto>()
+                .ForMember(dest => dest.EndTime, opt => opt.MapFrom(src => src.End))
+                .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.Start)).ReverseMap();
 
 
             CreateMap<Customer, CustomerGetDTO>()

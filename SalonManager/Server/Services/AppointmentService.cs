@@ -37,7 +37,7 @@ namespace SalonManager.Server.Services
             return (_dbContext.Appointments.Where(p => p.IsDeleted == false).Select(p => _mapper.Map<AppointmentDto>(p)).ToList());
         }
 
-        public void EditAppointment(AppointmentDto model)
+        public void EditAppointment(Appointment model)
         {
 
             if (model.Id == 0)
@@ -46,11 +46,11 @@ namespace SalonManager.Server.Services
 
                 var NewAppointment = new Appointment
                 {
-                    StartTime = model.Start,
-                    EndTime = model.End,
-                    CustomerId = model.CustomerId,
-                    ServiceId = model.ServiceId,
-                    Note = model.Note,
+                    // StartTime = model.Start,
+                    // EndTime = model.End,
+                    // CustomerId = model.CustomerId,
+                    // ServiceId = model.ServiceId,
+                    // Note = model.Note,
                     FullNameCastomer = customerName.FirstName + " " + customerName.LastName,
 
                 };
@@ -60,7 +60,15 @@ namespace SalonManager.Server.Services
             else
             {
                 var appToUpdate = _dbContext.Appointments.Where(p => p.Id == model.Id).FirstOrDefault();
-                _dbContext.Entry(appToUpdate).CurrentValues.SetValues(model);
+                
+                appToUpdate.Note = model.Note;
+                appToUpdate.EndTime = model.EndTime;
+                appToUpdate.StartTime = model.StartTime;
+                appToUpdate.CustomerId= model.CustomerId;
+                appToUpdate.ServiceId = model.ServiceId;
+                appToUpdate.FullNameCastomer= model.FullNameCastomer;
+
+               // _dbContext.Entry(appToUpdate).CurrentValues.SetValues(model);
             }
             _dbContext.SaveChanges();
 
