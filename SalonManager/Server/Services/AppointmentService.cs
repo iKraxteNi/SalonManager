@@ -46,11 +46,11 @@ namespace SalonManager.Server.Services
 
                 var NewAppointment = new Appointment
                 {
-                    // StartTime = model.Start,
-                    // EndTime = model.End,
-                    // CustomerId = model.CustomerId,
-                    // ServiceId = model.ServiceId,
-                    // Note = model.Note,
+                     StartTime = model.StartTime,
+                     EndTime = model.EndTime,
+                     CustomerId = model.CustomerId,
+                     ServiceId = model.ServiceId,
+                     Note = model.Note,
                     FullNameCastomer = customerName.FirstName + " " + customerName.LastName,
 
                 };
