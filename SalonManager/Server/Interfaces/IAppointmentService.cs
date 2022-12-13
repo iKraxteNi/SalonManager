@@ -7,6 +7,6 @@ namespace SalonManager.Server.Interfaces
     {
         void DelateAppointment(long Id);
         void EditAppointment(Appointment model);
-        List<AppointmentDto> GetAllAppointments(AppointmentGetDTO query);
+        IEnumerable<Appointment> GetAllAppointments();
     }
 }

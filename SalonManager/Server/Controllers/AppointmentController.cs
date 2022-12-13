@@ -24,13 +24,15 @@ namespace SalonManager.Server.Controllers
 
 
 
-        // GET: api/<ValuesController>}/{start}&{end}
+        
+
         [Route("getAll")]
         [HttpGet]
-        public IActionResult GetAll([FromQuery] AppointmentGetDTO query)
+        public IActionResult GetAll()
         {
-            var response = _appointmentService.GetAllAppointments(query);
-            return Ok(response);
+            // var response = _appointmentService.GetAllAppointments();
+            // return Ok(response);
+            return Ok(_mapper.Map<IEnumerable<AppointmentDto>>(_appointmentService.GetAllAppointments()));
         }
 
         [HttpPost]

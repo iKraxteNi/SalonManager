@@ -16,7 +16,7 @@ namespace SalonManager.Server.Services
             _dbContext = dbContext;
             _mapper = mapper;
         }
-        public List<AppointmentDto> GetAllAppointments(AppointmentGetDTO query)
+        public IEnumerable<Appointment> GetAllAppointments()
         {
 
             //var AllAppointmentsNoflitr = _dbContext.Appointments.Where(p => p.IsDeleted == false).Select(x => new AppointmentDto()
@@ -34,7 +34,7 @@ namespace SalonManager.Server.Services
             //used AutoMapper
 
 
-            return (_dbContext.Appointments.Where(p => p.IsDeleted == false).Select(p => _mapper.Map<AppointmentDto>(p)).ToList());
+            return (_dbContext.Appointments.Where(p => p.IsDeleted == false));//.Select(p => _mapper.Map<AppointmentDto>(p)).ToList());
         }
 
         public void EditAppointment(Appointment model)
