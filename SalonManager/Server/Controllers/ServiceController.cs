@@ -27,7 +27,7 @@ namespace SalonManager.Server.Controllers
 
         [HttpPost]
         [Route("delete")]
-        public async Task<IActionResult> Delete( [FromBody] ServiceEditDTO order)
+        public async Task<IActionResult> Delete([FromBody] ServiceEditDTO order)
         {
             ServiceDeleteDtoValidator validator = new();
 
@@ -38,7 +38,7 @@ namespace SalonManager.Server.Controllers
             long id = order.Id;
             _serviceService.DelateService(id);
             return Ok(new ResponseDto { Status = "Success", Message = "Service delete successfully" });
-        } 
+        }
 
         [HttpPost]
         [Route("editadd")]

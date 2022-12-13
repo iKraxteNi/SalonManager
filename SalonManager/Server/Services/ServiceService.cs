@@ -34,7 +34,7 @@ namespace SalonManager.Server.Services
 
             //used AutoMapper
 
-            return (_dbContext.Servicess.Where(p => p.IsDelate == false).Select(p => _mapper.Map< ServiceGetAllDTO>(p)).ToList());
+            return (_dbContext.Servicess.Where(p => p.IsDelate == false).Select(p => _mapper.Map<ServiceGetAllDTO>(p)).ToList());
         }
 
         public void DelateService(long Id)
