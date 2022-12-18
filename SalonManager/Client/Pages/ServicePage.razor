@@ -47,11 +47,11 @@
 
         <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Note" Title=" Info" MinWidth="100px">
             <EditTemplate Context="order">
-                <RadzenTextBox @bind-Value="order.Note" Style="width:100%; display: block" Name="Info" />   
+                <RadzenTextBox @bind-Value="order.Note" Style="width:100%; display: block" Name="Info" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
             <Template Context="order">
                 <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
                 </RadzenButton>
