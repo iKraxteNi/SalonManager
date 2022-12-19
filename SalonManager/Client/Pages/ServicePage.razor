@@ -51,7 +51,7 @@
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
             <Template Context="order">
                 <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
                 </RadzenButton>

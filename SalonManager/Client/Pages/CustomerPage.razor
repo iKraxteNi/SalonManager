@@ -29,15 +29,14 @@
             <RadzenDataGridColumn TItem="CustomerGetDTO" Property="LastName" Title="Nazwisko">
                 <EditTemplate Context="order">
                     <RadzenTextBox @bind-Value="order.LastName" Style="width:100%; display: block" Name="LastName" />
-                    <RadzenRequiredValidator Component="LastName" Popup="true" Text="nowyt dej" Visible="true" DefaultValue="0" /> 
-                    <RadzenRequiredValidator Text="Name is required" Component="LastName" Popup="true" DefaultValue="null" />
+                    <RadzenRequiredValidator Text="Name is required" Component="LastName" Popup="true"  />
                 </EditTemplate>
             </RadzenDataGridColumn>
 
              <RadzenDataGridColumn TItem="CustomerGetDTO" Property="PhoneNumber" Title="Nr.Telefonu">
                 <EditTemplate Context="order">
                     <RadzenTextBox @bind-Value="order.PhoneNumber" Style="width:100%; display: block" Name="PhoneNumber" />
-                    <RadzenRequiredValidator Text="PhoneNumber is required" Component="PhoneNumber" Popup="true" Style="display:block" />
+                     <RadzenRequiredValidator Text="PhoneNumber is required" Component="PhoneNumber" Popup="true"  />
                 </EditTemplate>
             </RadzenDataGridColumn>                   
 
@@ -47,7 +46,7 @@
                 </EditTemplate>
             </RadzenDataGridColumn>
 
-            <RadzenDataGridColumn TItem="CustomerGetDTO" Context="sampleBlazorModelsSampleOrder" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+            <RadzenDataGridColumn TItem="CustomerGetDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
                 <Template Context="order">
                     <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
                     </RadzenButton>
