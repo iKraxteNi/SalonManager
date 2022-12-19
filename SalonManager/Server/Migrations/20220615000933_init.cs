@@ -287,7 +287,8 @@ namespace SalonManager.Server.Migrations
                     ServicePrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     UserId = table.Column<long>(type: "bigint", nullable: false),
                     Note = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    IsDeleted = table.Column<bool>(type: "bit", nullable: false)
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: false),
+                    FullNameCastomer = table.Column<string>(type: "nvarchar(100)", nullable: true)
                 },
                 constraints: table =>
                 {

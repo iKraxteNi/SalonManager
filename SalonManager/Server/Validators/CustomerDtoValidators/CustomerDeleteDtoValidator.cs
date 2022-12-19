@@ -8,8 +8,8 @@ namespace SalonManager.Server.Validators.CustomerDtoValidators
         public CustomerDeleteDtoValidator()
         {
             RuleFor(x => x.Id)
-                .NotEmpty().WithMessage("CustomerId required");
-        }
+                 .NotEmpty().WithMessage("Name required");
+
   
 
     }

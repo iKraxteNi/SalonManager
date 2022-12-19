@@ -46,7 +46,7 @@ namespace SalonManager.Server.Controllers
         [Route("editadd")]
         public async Task<IActionResult> Edit([FromBody] CustomerEditDTO order)
         {
-            CustomerDeleteDtoValidator validator = new();
+            CustomerEditAddDtoValidator validator = new();
 
             var validResult = validator.Validate(order);
             if (!validResult.IsValid)
