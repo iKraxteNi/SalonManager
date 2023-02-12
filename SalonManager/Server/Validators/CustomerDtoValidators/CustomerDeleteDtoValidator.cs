@@ -10,7 +10,8 @@ namespace SalonManager.Server.Validators.CustomerDtoValidators
             RuleFor(x => x.Id)
                  .NotEmpty().WithMessage("Name required");
 
-  
 
+
+        }
     }
 }
