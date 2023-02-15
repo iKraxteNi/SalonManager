@@ -7,10 +7,7 @@ namespace SalonManager.Server.Validators.AppointmentDtoValidators
     {
         public AppointmentEditAddDtoValidator()
         {
-            RuleFor(x => x.Id)
-                .NotEmpty().WithMessage("AppointmentId is required");
-            RuleFor(x => x.FullNameCastomer)
-                .NotEmpty().WithMessage("FullNameCastomer is required");
+
             RuleFor(x => x.Start)
                 .NotEmpty().WithMessage("Start is required");
             RuleFor(x => x.End)

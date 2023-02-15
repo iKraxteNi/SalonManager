@@ -33,7 +33,7 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
+  <ItemGroup>	  
     <Folder Include="Data\Migrations\" />
     <Folder Include="Validators\ServiceDtoValidators\" />
   </ItemGroup>
