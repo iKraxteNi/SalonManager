@@ -12,7 +12,7 @@
 
         public Service Service { get; set; }
         public long ServiceId { get; set; }
-        public decimal ServicePrice { get; set; }
+        public string ServiceName { get; set; }
 
         public User User { get; set; }
         public long? UserId { get; set; }

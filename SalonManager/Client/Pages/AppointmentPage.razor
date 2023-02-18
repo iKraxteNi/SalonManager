@@ -9,7 +9,7 @@
 @inject DialogService DialogService
 @inject HttpClient Http
 
-@*<RadzenExample Name="Scheduler" AdditionalSourceCodePages=@(new List<string>() { "AddAppointmentPage.razor", "EditAppointmentPage.razor" })/>*@
+
     
     <RadzenScheduler  @ref=@scheduler  SlotRender=@OnSlotRender style="height: 768px;" TItem="AppointmentDto" Data=@appointments StartProperty="Start" EndProperty="End"
         TextProperty="FullNameCastomer" SelectedIndex="2"
@@ -30,8 +30,20 @@
     {
         base.OnInitialized();
 
+        //appointments  = await Http.GetFromJsonAsync<List<AppointmentDto>>("api/appointment/getAll");
+        //await Task.Delay(500);
+        //await scheduler.Reload();
 
-        appointments  = await Http.GetFromJsonAsync<List<AppointmentDto>>("api/appointment/getAll");
+        DateTime start = DateTime.Today.AddMonths(-3) ;
+        DateTime end =DateTime.Today.AddMonths(5);
+
+        var query = new Dictionary<string,string>
+        {
+            ["StartTime" ] =start.ToString("MM/dd/yyyy HH:mm") ,
+            ["EndTime"]  = end.ToString("MM/dd/yyyy HH:mm")
+        };
+
+        appointments = await Http.GetFromJsonAsync<List<AppointmentDto>>(QueryHelpers.AddQueryString("api/appointment/getAll", query));
         await Task.Delay(500);
         await scheduler.Reload();
 
@@ -48,9 +60,6 @@
             ["EndTime"]  = end.ToString("MM/dd/yyyy HH:mm")
         };
 
-
-
-
         appointments = await Http.GetFromJsonAsync<List<AppointmentDto>>(QueryHelpers.AddQueryString("api/appointment/getAll", query));
         await Task.Delay(500);
         await scheduler.Reload();
@@ -61,11 +70,11 @@
         // Highlight today in month view
         if (args.View.Text == "Month" && args.Start.Date == DateTime.Today)
         {
-            args.Attributes["style"] = "background: rgba(255,220,40,.2);";
+            args.Attributes["style"] = "background: rgba(200,220,20,.2);";
         }
 
         // Highlight working hours (9-18)
-        if ((args.View.Text == "Week" || args.View.Text == "Day") && args.Start.Hour > 8 && args.Start.Hour < 19)
+        if ((args.View.Text == "Week" || args.View.Text == "Day") && args.Start.Hour > 8 && args.Start.Hour < 18)
         {
             args.Attributes["style"] = "background: rgba(255,220,40,.2);";
         }

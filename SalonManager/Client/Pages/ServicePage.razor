@@ -8,9 +8,9 @@
 
 
 
-<h1>Tabela świadczonych usług</h1>
+<h1>Świadczone usługi</h1>
 
-<p>Podgląd wraz z edycją</p>
+
 
 
 
@@ -19,29 +19,30 @@
                 Data="@orders" TItem="ServiceGetAllDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
     <Columns>
         
-        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Id" Title="ID" Width="50px" />
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Id" Title="ID" Width="50px" Visible="false" />
 
-        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Name" Title="Nazwa"  MinWidth="200px"  >
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Name" Title="Nazwa usługi"  MinWidth="200px"  >
             <EditTemplate Context="order">
                 <RadzenTextBox @bind-Value="order.Name" Style="width:100% ; display: block" Name="Name" />
                 <RadzenRequiredValidator Text="Name is required" Component="Name" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Price" Title="Cena"   Width="70px">
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Price" Title="Cena"   MinWidth="85px" Width="128">
             <Template Context="order">
-                @String.Format(new System.Globalization.CultureInfo("PLN"), "{0:C}", order.Price)
+                @String.Format(  "{0} PLN", order.Price)
             </Template>
             <EditTemplate Context="order">
-                <RadzenNumeric @bind-Value="order.Price" Style="width:100%" />
+                <RadzenNumeric @bind-Value="order.Price" Style="width:30%" />
             </EditTemplate>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Duration" Title="Czas min."  Width="80px">
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Duration" Title="Czas min."  MinWidth="=76px" Width="128">
             <Template Context="order">
-                @String.Format(new System.Globalization.CultureInfo("min"), "{0:C}", order.Duration)
+                
+                @String.Format(" {0:F0} min", order.Duration)
             </Template>
             <EditTemplate Context="order">
-                <RadzenNumeric @bind-Value="order.Duration" Style="width:100%;" />
+                <RadzenNumeric @bind-Value="order.Duration" Style="width:30%;" />
             </EditTemplate>
         </RadzenDataGridColumn>
 
@@ -51,7 +52,7 @@
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="150px">
             <Template Context="order">
                 <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
                 </RadzenButton>
@@ -85,8 +86,6 @@
     IList<ServiceGetAllDTO> orders;
     ServiceGetAllDTO orderToInsert;
 
-
-
     protected override async Task OnInitializedAsync()
     {
         base.OnInitialized();
@@ -112,7 +111,6 @@
         {
             orderToInsert = null;
         }
-
         orders.Add(order);
 
     }
@@ -123,7 +121,6 @@
         {
             orderToInsert = null;
         }
-
         await Http.PostAsJsonAsync($"api/service/editadd", order);
         orders = await Http.GetFromJsonAsync<List<ServiceGetAllDTO>>("api/service/getAll");
 

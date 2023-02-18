@@ -43,13 +43,14 @@ namespace SalonManager.Server.Services
             if (model.Id == 0)
             {
                 var customerName = _dbContext.Customers.Where(p => p.Id == model.CustomerId).FirstOrDefault();
-
+                var serviceName = _dbContext.Servicess.Where(p => p.Id == model.ServiceId).FirstOrDefault();
                 var NewAppointment = new Appointment
                 {
                     StartTime = model.StartTime,
                     EndTime = model.EndTime,
                     CustomerId = model.CustomerId,
                     ServiceId = model.ServiceId,
+                    ServiceName = serviceName.Name,
                     Note = model.Note,
                     FullNameCastomer = customerName.FirstName + " " + customerName.LastName,
 
@@ -60,12 +61,14 @@ namespace SalonManager.Server.Services
             else
             {
                 var appToUpdate = _dbContext.Appointments.Where(p => p.Id == model.Id).FirstOrDefault();
+                var serviceName = _dbContext.Servicess.Where(p => p.Id == model.ServiceId).FirstOrDefault();
 
                 appToUpdate.Note = model.Note;
                 appToUpdate.EndTime = model.EndTime;
                 appToUpdate.StartTime = model.StartTime;
                 appToUpdate.CustomerId = model.CustomerId;
                 appToUpdate.ServiceId = model.ServiceId;
+                appToUpdate.ServiceName = serviceName.Name;
                 appToUpdate.FullNameCastomer = model.FullNameCastomer;
 
                 // _dbContext.Entry(appToUpdate).CurrentValues.SetValues(model);
@@ -82,9 +85,13 @@ namespace SalonManager.Server.Services
             _dbContext.SaveChanges();
 
         }
-        //public List<AppointmentDto> GetAllAppointments(DateTime start, DateTime end)
+
+        //public List<AppointmentDto> GetAppointmentsByTimeRange(DateTime start, DateTime end)
         //{
-        //    var AllAppointments = _dbContext.Appointments.Select(x => new AppointmentDto()
+        //    var AllAppointments = _dbContext.Appointments.Where(p => p.IsDeleted == false))
+
+
+        //  //  var AllAppointments = _dbContext.Appointments.Select(x => new AppointmentDto()
         //    {
         //        Id = x.Id,
         //        EndTime = x.EndTime,
@@ -94,6 +101,40 @@ namespace SalonManager.Server.Services
         //    }).ToList();
         //    return AllAppointments.Where(x => x.StartTime.Date <= end && start <= x.EndTime.Date);
         //}
+
+        //public IEnumerator<AppointmentDto> GetAppointmentsByTimeRange(DateTime Start, DateTime End)
+        //{
+        //    var allAppointments = _dbContext.Appointments
+        //        .Where(a => a.IsDeleted == false && a.StartTime >= Start && a.EndTime <= End)
+        //        .ToList();
+
+        //    var appointmentDtos = _mapper.Map<IEnumerator<AppointmentDto>>(allAppointments);
+
+        //    return appointmentDtos;
+        //}
+
+
+        public IEnumerable<AppointmentDto> GetAppointmentsByTimeRange(DateTime start, DateTime end)
+        {
+            var AllAppointments = _dbContext.Appointments
+                .Where(p => p.IsDeleted == false)
+                .Select(x => new AppointmentDto()
+                {
+                    Note = x.Note,
+                    End = x.EndTime,
+                    Start = x.StartTime,
+                    CustomerId = x.CustomerId,
+                    ServiceId = x.ServiceId,
+                    ServiceName = x.ServiceName,
+                    FullNameCastomer = x.FullNameCastomer
+
+                }).ToList();
+
+            return AllAppointments.Where(x => x.Start.Date <= end && start <= x.End.Date);
+        }
+
+
+
 
 
     }

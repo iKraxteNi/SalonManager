@@ -60,7 +60,22 @@ namespace SalonManager.Server.Controllers
             long id = model.Id;
             _appointmentService.DelateAppointment(id);
             return Ok(new ResponseDto { Status = "Success", Message = "Appointment deleted successfully" });
+
+
+
         }
+        [HttpGet]
+        [Route("GetDate")]
+        public IActionResult GetDate(DateTime StartTime, DateTime EndTime)
+        {
+            var appointments = _appointmentService.GetAppointmentsByTimeRange(StartTime, EndTime);
+            var appointmentDtos = _mapper.Map<IEnumerable<AppointmentDto>>(appointments);
+            return Ok(appointmentDtos);
+        }
+
+
+
+
     }
 
 

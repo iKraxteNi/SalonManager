@@ -17,7 +17,7 @@
     <RadzenDataGrid  @ref="ordersGrid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true" EditMode="Radzen.DataGridEditMode.Single"
                 Data="@orders" TItem="CustomerGetDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
         <Columns>
-            <RadzenDataGridColumn TItem="CustomerGetDTO" Property="Id" Title="ID" Width="120px" />
+            <RadzenDataGridColumn TItem="CustomerGetDTO" Property="Id" Title="ID" Width="120px" Visible="false" />
             
             <RadzenDataGridColumn TItem="CustomerGetDTO" Property="FirstName" Title="Imię">
                 <EditTemplate Context="order">
@@ -46,7 +46,7 @@
                 </EditTemplate>
             </RadzenDataGridColumn>
 
-            <RadzenDataGridColumn TItem="CustomerGetDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="120px">
+            <RadzenDataGridColumn TItem="CustomerGetDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="150px">
                 <Template Context="order">
                     <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
                     </RadzenButton>
