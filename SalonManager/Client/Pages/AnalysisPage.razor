@@ -1,0 +1,165 @@
+﻿@page "/analysispage"
+@using System.Globalization
+@using Microsoft.AspNetCore.WebUtilities
+@using Newtonsoft.Json
+@using SalonManager.Shared.ResponsesDTOs
+
+@inject HttpClient Http
+
+<h3>analysispage</h3>
+
+<div class="container">
+    <div class="row">
+        <div class="col-sm-12 my-5">
+            <RadzenCard class="w-100 mb-4" Style="display: flex; align-items: center; gap: 0.5rem">
+                <RadzenCheckBox @bind-Value="@smooth" Name="smooth"></RadzenCheckBox>
+                <RadzenLabel Text="Smooth" For="smooth" Style="margin-right: 1rem; display:none; " />
+
+                <RadzenCheckBox @bind-Value="@showDataLabels" Name="dataLabels"></RadzenCheckBox>
+                <RadzenLabel Text="Show Data Labels" For="dataLabels" />
+
+            </RadzenCard>
+            <RadzenChart>
+                <RadzenLineSeries Smooth="@smooth" Data="@monthlyRevenuesReverse" CategoryProperty="Date" Title="Przychód" ValueProperty="Revenue">
+                    <RadzenMarkers MarkerType="MarkerType.Circle" />
+                    <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                </RadzenLineSeries>
+
+                <RadzenCategoryAxis Padding="20" Formatter="@FormatAsMonth" />
+                <RadzenValueAxis Formatter="@FormatAsPLN">
+                    <RadzenGridLines Visible="true" />
+                    <RadzenAxisTitle Text="Przychód w PLN" />
+                </RadzenValueAxis>
+            </RadzenChart>
+        </div>
+    </div>
+</div>
+
+@*<div class="container">
+    <div class="row">
+        <div class="col-sm-12 col-lg-6 offset-lg-3 my-5">
+            <RadzenCard class="w-100 mb-4" >
+                <RadzenCheckBox @bind-Value="@showDataLabels" Name="dataLabels"></RadzenCheckBox>
+                <RadzenLabel Text="Show Data Labels" For="dataLabels" Style="margin-left: 8px; vertical-align: middle;" />
+            </RadzenCard>
+            <RadzenChart>
+                <RadzenDonutSeries Data="@revenue" CategoryProperty="Quarter" ValueProperty="Revenue">
+                    <ChildContent>
+                        <RadzenSeriesDataLabels Visible="@showDataLabels" />
+                    </ChildContent>
+                    <TitleTemplate>
+                        <div class="rz-donut-content">
+                            <div>Revenue</div>
+                            <div>for 2020</div>
+                        </div>
+                    </TitleTemplate>
+                </RadzenDonutSeries>
+            </RadzenChart>
+        </div>
+    </div>
+</div>*@
+
+@code {
+    bool smooth = true;
+    bool showDataLabels = false;
+
+    IList<AppointmentDto> appointmentsAdd = new List<AppointmentDto>();
+
+    IList<CustomerGetDTO> customers;
+    IList<ServiceAllPageDTO> services;
+
+    class DataRevenue
+    {
+        public string Date { get; set; }
+        public decimal Revenue { get; set; }
+    }
+    IEnumerable<DataRevenue> monthlyRevenues = new List<DataRevenue>();
+
+    // IList<DataRevenue> monthlyRevenuesReverse  ;
+    IEnumerable<DataRevenue> monthlyRevenuesReverse;
+
+    protected override async Task OnInitializedAsync()
+    {
+        base.OnInitialized();
+
+
+        customers = await Http.GetFromJsonAsync<List<CustomerGetDTO>>("api/customer/getAll");
+        services = await Http.GetFromJsonAsync<List<ServiceAllPageDTO>>("api/service/getAll");
+
+
+
+        DateTime start = new DateTime(DateTime.Today.Year, 1, 1, 0, 0, 0);
+        DateTime end = DateTime.Now;
+
+        var queryToday = new Dictionary<string, string>
+            {
+                ["StartTime"] = start.ToString("MM/dd/yyyy HH:mm"),
+                ["EndTime"] = end.ToString("MM/dd/yyyy HH:mm")
+            };
+
+        appointmentsAdd = await Http.GetFromJsonAsync<List<AppointmentDto>>(QueryHelpers.AddQueryString("api/appointment/GetDate", queryToday));
+
+        var revenues = from appointment in appointmentsAdd
+                       group appointment by new { Month = appointment.Start.Month, ServiceId = appointment.ServiceId } into appointmentGroup
+                       join service in services on appointmentGroup.Key.ServiceId equals service.Id
+                       let servicePrice = service.Price
+                       select new { Month = appointmentGroup.Key.Month, Revenue = appointmentGroup.Count() * servicePrice };
+
+        monthlyRevenues = from revenue in revenues
+                          group revenue by revenue.Month into revenueGroup
+                          select new DataRevenue { Date = new DateTime(2023, revenueGroup.Key, 1).ToString("yyyy-MM-dd"), Revenue = revenueGroup.Sum(r => r.Revenue) };
+
+        monthlyRevenuesReverse = monthlyRevenues.Reverse();
+
+    }
+
+    string FormatAsPLN(object value)
+    {
+        return ((double)value).ToString(" 0  PLN");
+    }
+
+    string FormatAsMonth(object value)
+    {
+        if (value != null)
+        {
+            return Convert.ToDateTime(value).ToString("MMM");
+        }
+
+        return string.Empty;
+    }
+}
+
+@*
+@code {
+    bool showDataLabels = false;
+
+    class DataItem
+    {
+        public string Quarter { get; set; }
+        public double Revenue { get; set; }
+    }
+
+    DataItem[] revenue = new DataItem[] {
+    new DataItem
+    {
+    Quarter = "Q1",
+    Revenue = 30000
+    },
+    new DataItem
+    {
+    Quarter = "Q2",
+    Revenue = 40000
+    },
+    new DataItem
+    {
+    Quarter = "Q3",
+    Revenue = 50000
+    },
+    new DataItem
+    {
+    Quarter = "Q4",
+    Revenue = 80000
+    },
+    };
+}
+*@
