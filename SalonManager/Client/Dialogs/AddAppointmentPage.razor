@@ -1,9 +1,14 @@
-﻿@using Radzen.Blazor.Rendering
+﻿@using Microsoft.AspNetCore.WebUtilities
+@using Radzen.Blazor.Rendering
 @using SalonManager.Shared.ResponsesDTOs
-@inject DialogService DialogService
+
+
+
+@inject Radzen.DialogService DialogService
+
 @inject HttpClient Http
 
-<RadzenTemplateForm TItem="AppointmentDto" Data="@model" Submit=@OnSubmit>
+<RadzenTemplateForm   TItem="AppointmentDto" Data="@model" Submit=@OnSubmit>
     <div class="row" style="margin-bottom: 16px">
         <div class="col-md-3">
             <RadzenLabel Text="Klient" />
@@ -11,14 +16,14 @@
         <div class="col">
             <RadzenCard>
                 <h4 class="mb-4">Wybierz klienta</h4>
-                <RadzenDropDown AllowClear="false"  AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@customers @bind-Value=@model.CustomerId
-                                TextProperty="FullNameCastomer" ValueProperty="Id"  Class="w-100" Name="Customer"  />
+                <RadzenDropDown AllowClear="false" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@customers @bind-Value=@model.CustomerId
+                                TextProperty="FullNameCastomer" ValueProperty="Id" Class="w-100" Name="Customer" />
             </RadzenCard>
 
-            <RadzenNumericRangeValidator Component="Customer" Min="1" />     
+            <RadzenNumericRangeValidator Component="Customer" Min="1" />
         </div>
     </div>
-        <div class="row" style="margin-bottom: 16px">
+    <div class="row" style="margin-bottom: 16px">
         <div class="col-md-3">
             <RadzenLabel Text="Usługa" />
         </div>
@@ -26,7 +31,7 @@
             <RadzenCard>
                 <h4 class="mb-4">Wybierz usługę</h4>
                 <RadzenDropDown AllowClear="true" AllowFiltering="true" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive" Data=@services @bind-Value=@model.ServiceId
-                                TextProperty="Name" ValueProperty="Id"  Class="w-100" />
+                                 TextProperty="Name" ValueProperty="Id"  Class="w-100" />
             </RadzenCard>
 
             <RadzenNumericRangeValidator Component="Customer" Min="1" />
@@ -37,8 +42,8 @@
             <RadzenLabel Text="Notatka" />
         </div>
         <div class="col">
-            <RadzenTextBox @bind-Value="@model.Note" Name="Note" />
-     
+            <RadzenTextBox @bind-Value="@model.Note" Name="Note" Class="w-100"/>
+
         </div>
     </div>
 
@@ -48,7 +53,7 @@
         </div>
         <div class="col">
             <RadzenDatePicker @bind-Value="@model.Start" Name="Start" ShowTime="true" />
-            <RadzenRequiredValidator  Component="Start" Text="Proszę podać czas rozpoczęcia" />
+            <RadzenRequiredValidator Component="Start" Text="Proszę podać czas rozpoczęcia" />
         </div>
     </div>
     <div class="row" style="margin-bottom: 16px">
@@ -67,6 +72,9 @@
         </div>
     </div>
 </RadzenTemplateForm>
+
+
+
 @code {
 
 
@@ -77,10 +85,12 @@
     public DateTime End { get; set; }
 
     AppointmentDto model = new AppointmentDto();
+    AppointmentDto appointmentsAdd1 = new AppointmentDto();
+    IList<AppointmentDto> appointmentsAdd = new List<AppointmentDto>();
+    DateTime EndLast;
 
     IList<CustomerGetDTO> customers;
     IList<ServiceAllPageDTO> services;
-
     protected override async Task OnInitializedAsync()
     {
         base.OnInitialized();
@@ -89,23 +99,68 @@
         customers = await Http.GetFromJsonAsync<List<CustomerGetDTO>>("api/customer/getAll");
         services = await Http.GetFromJsonAsync<List<ServiceAllPageDTO>>("api/service/getAll");
 
+
+
+        DateTime start = Start;
+        DateTime end = End;
+
+        var queryToday = new Dictionary<string, string>
+            {
+                ["StartTime"] = start.ToString("MM/dd/yyyy HH:mm"),
+                ["EndTime"] = end.ToString("MM/dd/yyyy HH:mm")
+            };
+
+        appointmentsAdd = await Http.GetFromJsonAsync<List<AppointmentDto>>(QueryHelpers.AddQueryString("api/appointment/GetDate", queryToday));
+
+        if (0 != appointmentsAdd.Count)
+        {
+            appointmentsAdd1 = appointmentsAdd.Last();
+            EndLast = appointmentsAdd1?.End ?? default(DateTime);
+        }
+        else
+        {
+            EndLast = default;
+        }
+
+
+
     }
 
     protected override void OnParametersSet()
     {
-        model.Start = Start;
-        model.End = End;
+        if (EndLast == default)
+        {
+            model.Start = Start.AddHours(7);
+        }
+        else { model.Start = EndLast; };
+
+        model.End = End.AddDays(-1);
         //model.Id = 0;
     }
-        async  Task SendData(AppointmentDto model)
+
+
+
+    async Task SendData(AppointmentDto model)
     {
         await Http.PostAsJsonAsync($"api/appointment/editadd", model);
     }
 
     void OnSubmit(AppointmentDto model)
     {
-        
+
         SendData(model);
         DialogService.Close(model);
     }
+    //void OnServiceSelected(ChangeEventArgs args)
+    //{ @*@onchange="OnServiceSelected"*@
+    //    if (int.TryParse(args.Value.ToString(), out int serviceId))
+    //    {
+    //        var service = services.FirstOrDefault(s => s.Id == serviceId);
+    //        if (service != null)
+    //        {
+    //            End = model.Start.AddMinutes(service.Duration);
+    //            OnParametersSet();
+    //        }
+    //    }
+    //}
 }

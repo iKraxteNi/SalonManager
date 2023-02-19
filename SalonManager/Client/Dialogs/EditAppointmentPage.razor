@@ -2,7 +2,7 @@
 @using SalonManager.Shared.ResponsesDTOs
 
 
-@inject DialogService DialogService
+@inject Radzen.DialogService DialogService
 @inject HttpClient Http
 
 <RadzenTemplateForm TItem="AppointmentDto" Data="@model" Submit=@OnSubmit >
@@ -39,7 +39,7 @@
             <RadzenLabel Text="Notatka" />
         </div>
         <div class="col">
-            <RadzenTextBox @bind-Value="@model.Note" Name="Notatka" />
+            <RadzenTextBox @bind-Value="@model.Note" Name="Notatka" Class="w-100" />
 
         </div>
     </div>

@@ -14,16 +14,16 @@
 
 
 
-<RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Dodaj Usługę" Click="@InsertRow" Disabled=@(orderToInsert != null) />
+<RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px  " ButtonStyle="ButtonStyle.Secondary" Text="Dodaj Usługę" Click="@InsertRow" Disabled=@(orderToInsert != null) />
 <RadzenDataGrid @ref="ordersGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="Radzen.DataGridEditMode.Single"
-                Data="@orders" TItem="ServiceGetAllDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+                Data="@orders" TItem="ServiceGetAllDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Style=" background-color: rebeccapurple">
     <Columns>
         
         <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Id" Title="ID" Width="50px" Visible="false" />
 
         <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Name" Title="Nazwa usługi"  MinWidth="200px"  >
             <EditTemplate Context="order">
-                <RadzenTextBox @bind-Value="order.Name" Style="width:100% ; display: block" Name="Name" />
+                <RadzenTextBox @bind-Value="order.Name" Style="width:100%; display: block" Name="Name" />
                 <RadzenRequiredValidator Text="Name is required" Component="Name" Popup="true" />
             </EditTemplate>
         </RadzenDataGridColumn>
@@ -58,7 +58,7 @@
                 </RadzenButton>
             </Template>
             <EditTemplate Context="order">
-                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@((args) => SaveRow(order))">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Secondary" Class="m-1" Click="@((args) => SaveRow(order))">
                 </RadzenButton>
                 <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@((args) => CancelEdit(order))">
                 </RadzenButton>
@@ -66,7 +66,7 @@
         </RadzenDataGridColumn>
         <RadzenDataGridColumn TItem="ServiceGetAllDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
             <Template Context="order">
-                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))" @onclick:stopPropagation="true">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter"  Size="ButtonSize.Medium" Class="m-1" Click="@(args => DeleteRow(order))" @onclick:stopPropagation="true">
                 </RadzenButton>
             </Template>
             <EditTemplate Context="order">

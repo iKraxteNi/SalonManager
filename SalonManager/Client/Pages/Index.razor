@@ -1,5 +1,146 @@
 ﻿@page "/"
 
+@using Microsoft.AspNetCore.WebUtilities
+@using Radzen.Blazor
+@using Radzen.Blazor.Rendering
+@using SalonManager.Shared.ResponsesDTOs
+
+
+
+@inject HttpClient Http
+
 <PageTitle>Index</PageTitle>
 
 <h1>Witam w Serwisie </h1>
+
+@page "/appointments"
+
+<style>
+    table {
+        border-collapse: revert;
+        border-spacing: 0;
+        margin: -100 auto;
+        border: 5px solid purple;
+        text-align: center;
+        min-width: 120px;
+         border-radius: 10px;
+    }
+
+    table th, table td {
+        border-left: 0.5px solid #baa718;
+        min-width: 120px;
+        border-right: 0.5px solid #baa718;
+    }
+
+    table th {
+        border-top: 0.25px solid #baa718;
+        min-width: 125px;
+        border-bottom: 0.25px solid #baa718;
+    }
+
+    table td {
+        border-bottom: 0.25px solid #baa718;
+        min-width: 120px;
+    }
+</style>
+
+<h1>Plan na dzisiaj</h1>
+@if (appointmentsToday.Any())
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Klient</th>
+                <th>Godziny</th>
+                <th>Usługa</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var appointment in appointmentsToday)
+            {
+                <tr>
+                    <td>@appointment.FullNameCastomer</td>
+                    <td>@appointment.Start.ToString("hh:mm tt")  -  @appointment.End.ToString("hh:mm tt")  </td>
+                    <td>@appointment.ServiceName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Brak planowanych wizyt na dzisiaj.</p>
+}
+
+<h1>Plan na jutro</h1>
+@if (appointmentsTomorrow.Any())
+{
+    <table>
+        <thead>
+            <tr>
+                <th>Klient</th>
+                <th>Godziny</th>
+                <th>Usługa</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var appointment in appointmentsToday)
+            {
+                <tr>
+                    <td>@appointment.FullNameCastomer</td>
+                    <td>@appointment.Start.ToString("hh:mm tt")  -  @appointment.End.ToString("hh:mm tt")   </td>
+                    <td>@appointment.ServiceName</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>Brak planowanych wizyt na jutro.</p>
+}
+
+@code {
+
+
+      IList<AppointmentDto> appointmentsToday = new List<AppointmentDto>();
+    IList<AppointmentDto> appointmentsTomorrow = new List<AppointmentDto>();
+
+    private Timer timer;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await LoadData();
+        timer = new Timer(async (state) => await LoadData(), null, TimeSpan.FromSeconds(600), TimeSpan.FromSeconds(600));
+    }
+
+    private async Task LoadData()
+    {
+        DateTime start = DateTime.Today;
+        DateTime end = DateTime.Today;
+
+        var queryToday = new Dictionary<string, string>
+            {
+                ["StartTime"] = start.ToString("MM/dd/yyyy HH:mm"),
+                ["EndTime"] = end.ToString("MM/dd/yyyy HH:mm")
+            };
+
+        appointmentsToday = await Http.GetFromJsonAsync<List<AppointmentDto>>(QueryHelpers.AddQueryString("api/appointment/GetDate", queryToday));
+
+         start = DateTime.Today.AddDays(1);
+         end = DateTime.Today.AddDays(1);
+
+        var queryTomorrow = new Dictionary<string, string>
+            {
+                ["StartTime"] = start.ToString("MM/dd/yyyy HH:mm"),
+                ["EndTime"] = end.ToString("MM/dd/yyyy HH:mm")
+            };
+
+        appointmentsTomorrow = await Http.GetFromJsonAsync<List<AppointmentDto>>(QueryHelpers.AddQueryString("api/appointment/GetDate", queryTomorrow));
+
+
+        StateHasChanged();
+    }
+
+
+}

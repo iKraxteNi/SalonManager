@@ -19,21 +19,6 @@ namespace SalonManager.Server.Services
         public IEnumerable<Appointment> GetAllAppointments()
         {
 
-            //var AllAppointmentsNoflitr = _dbContext.Appointments.Where(p => p.IsDeleted == false).Select(x => new AppointmentDto()
-            //{
-            //    Id = x.Id,
-            //    End = x.EndTime,
-            //    Start = x.StartTime,
-            //    FullNameCastomer = x.FullNameCastomer,
-            //    Note = x.Note
-
-            //}).ToList();
-
-            // return new List<AppointmentDto>(AllAppointmentsNoflitr);
-
-            //used AutoMapper
-
-
             return (_dbContext.Appointments.Where(p => p.IsDeleted == false));//.Select(p => _mapper.Map<AppointmentDto>(p)).ToList());
         }
 
@@ -86,34 +71,6 @@ namespace SalonManager.Server.Services
 
         }
 
-        //public List<AppointmentDto> GetAppointmentsByTimeRange(DateTime start, DateTime end)
-        //{
-        //    var AllAppointments = _dbContext.Appointments.Where(p => p.IsDeleted == false))
-
-
-        //  //  var AllAppointments = _dbContext.Appointments.Select(x => new AppointmentDto()
-        //    {
-        //        Id = x.Id,
-        //        EndTime = x.EndTime,
-        //        StartTime = x.StartTime,
-        //        Note = x.Note
-
-        //    }).ToList();
-        //    return AllAppointments.Where(x => x.StartTime.Date <= end && start <= x.EndTime.Date);
-        //}
-
-        //public IEnumerator<AppointmentDto> GetAppointmentsByTimeRange(DateTime Start, DateTime End)
-        //{
-        //    var allAppointments = _dbContext.Appointments
-        //        .Where(a => a.IsDeleted == false && a.StartTime >= Start && a.EndTime <= End)
-        //        .ToList();
-
-        //    var appointmentDtos = _mapper.Map<IEnumerator<AppointmentDto>>(allAppointments);
-
-        //    return appointmentDtos;
-        //}
-
-
         public IEnumerable<AppointmentDto> GetAppointmentsByTimeRange(DateTime start, DateTime end)
         {
             var AllAppointments = _dbContext.Appointments
@@ -130,7 +87,8 @@ namespace SalonManager.Server.Services
 
                 }).ToList();
 
-            return AllAppointments.Where(x => x.Start.Date <= end && start <= x.End.Date);
+            return AllAppointments.Where(x => x.Start.Date <= end && start <= x.End.Date && x.IsDeleted == false);
+
         }
 
 

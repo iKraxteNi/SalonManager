@@ -9,11 +9,8 @@
 
 
 <h1>Tabela klientów </h1>
-
-<p>Podgląd wraz z edycją </p>
-
  
-    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" Text="Zarejestruj Klienta" Click="@InsertRow" Disabled=@(orderToInsert != null) />
+    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" ButtonStyle="ButtonStyle.Secondary"   Text="Zarejestruj Klienta" Click="@InsertRow" Disabled=@(orderToInsert != null) />
     <RadzenDataGrid  @ref="ordersGrid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true" EditMode="Radzen.DataGridEditMode.Single"
                 Data="@orders" TItem="CustomerGetDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
         <Columns>
@@ -52,7 +49,7 @@
                     </RadzenButton>
                 </Template>
                 <EditTemplate Context="order">
-                    <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Primary" Class="m-1" Click="@((args) => SaveRow(order))">
+                    <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Secondary" Class="m-1" Click="@((args) => SaveRow(order))">
                     </RadzenButton>
                     <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@((args) => CancelEdit(order))">
                     </RadzenButton>
@@ -60,7 +57,7 @@
             </RadzenDataGridColumn>
             <RadzenDataGridColumn TItem="CustomerGetDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
                 <Template Context="order">
-                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))"  @onclick:stopPropagation="true">
+                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter"  Size="ButtonSize.Medium" Class="m-1" Click="@(args => DeleteRow(order))"  @onclick:stopPropagation="true">
                     </RadzenButton>
                 </Template>
                 <EditTemplate Context="order">

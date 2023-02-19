@@ -6,16 +6,17 @@
 @using SalonManager.Client.Dialogs
 @using SalonManager.Shared.ResponsesDTOs
 
-@inject DialogService DialogService
+
+@inject Radzen.DialogService DialogService
 @inject HttpClient Http
 
 
     
-    <RadzenScheduler  @ref=@scheduler  SlotRender=@OnSlotRender style="height: 768px;" TItem="AppointmentDto" Data=@appointments StartProperty="Start" EndProperty="End"
-        TextProperty="FullNameCastomer" SelectedIndex="2"
+    <RadzenScheduler  @ref=@scheduler  SlotRender=@OnSlotRender  style="height: 768px; " class="rz-background-color-series-2" TItem="AppointmentDto" Data=@appointments StartProperty="Start" EndProperty="End"
+        TextProperty="FullNameCastomer" SelectedIndex="1"
         SlotSelect=@OnSlotSelect AppointmentSelect=@OnAppointmentSelect AppointmentRender=@OnAppointmentRender> 
-        <RadzenDayView />
-        <RadzenWeekView />
+        <RadzenDayView StartTime=@TimeSpan.FromHours(6) />
+        <RadzenWeekView StartTime=@TimeSpan.FromHours(6) />
         <RadzenMonthView MaxAppointmentsInSlot="2" />
     </RadzenScheduler>
 
@@ -34,7 +35,7 @@
         //await Task.Delay(500);
         //await scheduler.Reload();
 
-        DateTime start = DateTime.Today.AddMonths(-3) ;
+        DateTime start = DateTime.Today.AddMonths(-5) ;
         DateTime end =DateTime.Today.AddMonths(5);
 
         var query = new Dictionary<string,string>
@@ -74,26 +75,18 @@
         }
 
         // Highlight working hours (9-18)
-        if ((args.View.Text == "Week" || args.View.Text == "Day") && args.Start.Hour > 8 && args.Start.Hour < 18)
+        if ((args.View.Text == "Week" || args.View.Text == "Day") && args.Start.Hour > 6 && args.Start.Hour < 22)
         {
-            args.Attributes["style"] = "background: rgba(255,220,40,.2);";
+            args.Attributes["style"] = "background: #d3beec;";    
         }
     }
 
     async Task OnSlotSelect(SchedulerSlotSelectEventArgs args)
     {
 
-        AppointmentDto data = await DialogService.OpenAsync<AddAppointmentPage>("Add Appointment",
+        AppointmentDto data = await DialogService.OpenAsync<AddAppointmentPage>("Dodaj nową wizytę",
             new Dictionary<string, object> { { "Start", args.Start }, { "End", args.End } });
 
-        //if (data != null)
-        //{
-        //    appointments  = await Http.GetFromJsonAsync<List<AppointmentDto>>("api/appointment/getAll");
-
-        //    // Either call the Reload method or reassign the Data property of the Scheduler
-
-        //    await scheduler.Reload();
-        //}
         await Task.Delay(500);
         appointments  = await Http.GetFromJsonAsync<List<AppointmentDto>>("api/appointment/getAll");
         await Task.Delay(500);
@@ -103,7 +96,7 @@
     async Task OnAppointmentSelect(SchedulerAppointmentSelectEventArgs<AppointmentDto> args)
     {
 
-        await DialogService.OpenAsync<EditAppointmentPage>("Edit Appointment", new Dictionary<string, object> { { "AppointmentDto", args.Data } });
+        await DialogService.OpenAsync<EditAppointmentPage>("Edytuj wybraną wizytę", new Dictionary<string, object> { { "AppointmentDto", args.Data } });
          appointments  = await Http.GetFromJsonAsync<List<AppointmentDto>>("api/appointment/getAll");
          
         await Task.Delay(500);
@@ -115,9 +108,10 @@
         // Never call StateHasChanged in AppointmentRender - would lead to infinite loop
        
 
-        //if (args.Data.Note == "Birthday")
-        //{
-        //    args.Attributes["style"] = "background: red";
-        //}
+        if (args.Data.FullNameCastomer !=null )
+        {
+            args.Attributes["style"] = "background: #baa718";
+        }
+        
     }
 }
