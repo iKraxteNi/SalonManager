@@ -9,84 +9,81 @@
 
 
 <h1>Tabela klientów </h1>
- 
-    <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" ButtonStyle="ButtonStyle.Secondary"   Text="Zarejestruj Klienta" Click="@InsertRow" Disabled=@(orderToInsert != null) />
-    <RadzenDataGrid  @ref="ordersGrid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true" EditMode="Radzen.DataGridEditMode.Single"
+
+<RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" ButtonStyle="ButtonStyle.Secondary" Text="Zarejestruj Klienta" Click="@InsertRow" Disabled=@(orderToInsert != null) />
+<RadzenDataGrid @ref="ordersGrid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true" EditMode="Radzen.DataGridEditMode.Single"
                 Data="@orders" TItem="CustomerGetDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
-        <Columns>
-            <RadzenDataGridColumn TItem="CustomerGetDTO" Property="Id" Title="ID" Width="120px" Visible="false" />
-            
-            <RadzenDataGridColumn TItem="CustomerGetDTO" Property="FirstName" Title="Imię">
-                <EditTemplate Context="order">
-                    <RadzenTextBox @bind-Value="order.FirstName" Style="width:100%; display: block" Name="FirstName" />
-                    <RadzenRequiredValidator Text="Name is required" Component="FirstName" Popup="true" />
-                </EditTemplate>
-            </RadzenDataGridColumn>
+    <Columns>
+        <RadzenDataGridColumn TItem="CustomerGetDTO" Property="Id" Title="ID" Width="120px" Visible="false" />
 
-            <RadzenDataGridColumn TItem="CustomerGetDTO" Property="LastName" Title="Nazwisko">
-                <EditTemplate Context="order">
-                    <RadzenTextBox @bind-Value="order.LastName" Style="width:100%; display: block" Name="LastName" />
-                    <RadzenRequiredValidator Text="Name is required" Component="LastName" Popup="true"  />
-                </EditTemplate>
-            </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="CustomerGetDTO" Property="FirstName" Title="Imię">
+            <EditTemplate Context="order">
+                <RadzenTextBox @bind-Value="order.FirstName" Style="width:100%; display: block" Name="FirstName" />
+                <RadzenRequiredValidator Text="Name is required" Component="FirstName" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
 
-             <RadzenDataGridColumn TItem="CustomerGetDTO" Property="PhoneNumber" Title="Nr.Telefonu">
-                <EditTemplate Context="order">
-                    <RadzenTextBox @bind-Value="order.PhoneNumber" Style="width:100%; display: block" Name="PhoneNumber" />
-                     <RadzenRequiredValidator Text="PhoneNumber is required" Component="PhoneNumber" Popup="true"  />
-                </EditTemplate>
-            </RadzenDataGridColumn>                   
+        <RadzenDataGridColumn TItem="CustomerGetDTO" Property="LastName" Title="Nazwisko">
+            <EditTemplate Context="order">
+                <RadzenTextBox @bind-Value="order.LastName" Style="width:100%; display: block" Name="LastName" />
+                <RadzenRequiredValidator Text="Name is required" Component="LastName" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
 
-                        <RadzenDataGridColumn TItem="CustomerGetDTO" Property="Note" Title="Info">
-                <EditTemplate Context="order">
-                    <RadzenTextBox @bind-Value="order.Note" Style="width:100%; display: block" Name="Info" />
-                </EditTemplate>
-            </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="CustomerGetDTO" Property="PhoneNumber" Title="Nr.Telefonu">
+            <EditTemplate Context="order">
+                <RadzenTextBox @bind-Value="order.PhoneNumber" Style="width:100%; display: block" Name="PhoneNumber" />
+                <RadzenRequiredValidator Text="PhoneNumber is required" Component="PhoneNumber" Popup="true" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
 
-            <RadzenDataGridColumn TItem="CustomerGetDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="150px">
-                <Template Context="order">
-                    <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
-                    </RadzenButton>
-                </Template>
-                <EditTemplate Context="order">
-                    <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Secondary" Class="m-1" Click="@((args) => SaveRow(order))">
-                    </RadzenButton>
-                    <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@((args) => CancelEdit(order))">
-                    </RadzenButton>
-                </EditTemplate>
-            </RadzenDataGridColumn>
-            <RadzenDataGridColumn TItem="CustomerGetDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
-                <Template Context="order">
-                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter"  Size="ButtonSize.Medium" Class="m-1" Click="@(args => DeleteRow(order))"  @onclick:stopPropagation="true">
-                    </RadzenButton>
-                </Template>
-                <EditTemplate Context="order">
-                    <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))">
-                    </RadzenButton>
-                </EditTemplate>
-            </RadzenDataGridColumn>
-        </Columns>
-    </RadzenDataGrid>
-    
+        <RadzenDataGridColumn TItem="CustomerGetDTO" Property="Note" Title="Info">
+            <EditTemplate Context="order">
+                <RadzenTextBox @bind-Value="order.Note" Style="width:100%; display: block" Name="Info" />
+            </EditTemplate>
+        </RadzenDataGridColumn>
+
+        <RadzenDataGridColumn TItem="CustomerGetDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="150px">
+            <Template Context="order">
+                <RadzenButton Icon="edit" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@(args => EditRow(order))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="order">
+                <RadzenButton Icon="check" ButtonStyle="ButtonStyle.Secondary" Class="m-1" Click="@((args) => SaveRow(order))">
+                </RadzenButton>
+                <RadzenButton Icon="close" ButtonStyle="ButtonStyle.Light" Class="m-1" Click="@((args) => CancelEdit(order))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="CustomerGetDTO" Context="order" Filterable="false" Sortable="false" TextAlign="TextAlign.Center" Width="60px">
+            <Template Context="order">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Variant="Variant.Flat" Shade="Shade.Lighter" Size="ButtonSize.Medium" Class="m-1" Click="@(args => DeleteRow(order))" @onclick:stopPropagation="true">
+                </RadzenButton>
+            </Template>
+            <EditTemplate Context="order">
+                <RadzenButton ButtonStyle="ButtonStyle.Danger" Icon="delete" Size="ButtonSize.Small" Class="m-1" Click="@(args => DeleteRow(order))">
+                </RadzenButton>
+            </EditTemplate>
+        </RadzenDataGridColumn>
+    </Columns>
+</RadzenDataGrid>
+
 
 
 @code {
 
 
-    RadzenDataGrid<CustomerGetDTO> ordersGrid ;
-    IList<CustomerGetDTO> orders  ;
+    RadzenDataGrid<CustomerGetDTO> ordersGrid;
+    IList<CustomerGetDTO> orders;
     CustomerGetDTO orderToInsert;
 
 
 
-    protected  override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
         base.OnInitialized();
 
-
-        orders  = await Http.GetFromJsonAsync<List<CustomerGetDTO>>("api/customer/getAll");
-
-
+        orders = await Http.GetFromJsonAsync<List<CustomerGetDTO>>("api/customer/getAll");
     }
 
     async Task EditRow(CustomerGetDTO order)
@@ -106,7 +103,6 @@
         {
             orderToInsert = null;
         }
-
         orders.Add(order);
     }
 
@@ -118,7 +114,7 @@
         }
 
         await Http.PostAsJsonAsync($"api/customer/editadd", order);
-        orders  = await Http.GetFromJsonAsync<List<CustomerGetDTO>>("api/customer/getAll");
+        orders = await Http.GetFromJsonAsync<List<CustomerGetDTO>>("api/customer/getAll");
 
         OnInitialized();
     }
@@ -129,7 +125,6 @@
         {
             orderToInsert = null;
         }
-
         ordersGrid.CancelEditRow(order);
     }
 
@@ -137,10 +132,9 @@
     void OnCreateRow(CustomerGetDTO order)
     {
         orders.Add(order);
-
     }
-    
-    
+
+
     async Task DeleteRow(CustomerGetDTO order)
     {
         if (order == orderToInsert)
@@ -150,7 +144,6 @@
 
         if (orders.Contains(order))
         {
-
             await Http.PostAsJsonAsync($"api/customer/delete", order);
             Thread.Sleep(200);
 

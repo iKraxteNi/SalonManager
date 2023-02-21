@@ -12,11 +12,11 @@
 
 
     
-    <RadzenScheduler  @ref=@scheduler  SlotRender=@OnSlotRender  style="height: 768px; " class="rz-background-color-series-2" TItem="AppointmentDto" Data=@appointments StartProperty="Start" EndProperty="End"
+    <RadzenScheduler  @ref=@scheduler  SlotRender=@OnSlotRender  style="height: 768px;"  TItem="AppointmentDto" Data=@appointments StartProperty="Start" EndProperty="End"
         TextProperty="FullNameCastomer" SelectedIndex="1"
         SlotSelect=@OnSlotSelect AppointmentSelect=@OnAppointmentSelect AppointmentRender=@OnAppointmentRender> 
-        <RadzenDayView StartTime=@TimeSpan.FromHours(6) />
-        <RadzenWeekView StartTime=@TimeSpan.FromHours(6) />
+        <RadzenDayView StartTime=@TimeSpan.FromHours(7)  />
+        <RadzenWeekView StartTime=@TimeSpan.FromHours(7) />
         <RadzenMonthView MaxAppointmentsInSlot="2" />
     </RadzenScheduler>
 
@@ -71,13 +71,19 @@
         // Highlight today in month view
         if (args.View.Text == "Month" && args.Start.Date == DateTime.Today)
         {
-            args.Attributes["style"] = "background: rgba(200,220,20,.2);";
+            args.Attributes["style"] = "background: #cbb8f4";
+        }
+
+          // Highlight today in week view
+        if (args.View.Text == "Week"  && args.Start.Date == DateTime.Today && args.End.Date == DateTime.Today )
+        {
+            args.Attributes["style"] = "background: #cbb8f4";
         }
 
         // Highlight working hours (9-18)
         if ((args.View.Text == "Week" || args.View.Text == "Day") && args.Start.Hour > 6 && args.Start.Hour < 22)
         {
-            args.Attributes["style"] = "background: #d3beec;";    
+           // args.Attributes["style"] = "background: #e3faea;";    
         }
     }
 
@@ -97,8 +103,8 @@
     {
 
         await DialogService.OpenAsync<EditAppointmentPage>("Edytuj wybraną wizytę", new Dictionary<string, object> { { "AppointmentDto", args.Data } });
-         appointments  = await Http.GetFromJsonAsync<List<AppointmentDto>>("api/appointment/getAll");
-         
+        appointments  = await Http.GetFromJsonAsync<List<AppointmentDto>>("api/appointment/getAll");
+
         await Task.Delay(500);
         await scheduler.Reload();
     }
@@ -106,11 +112,12 @@
     void OnAppointmentRender(SchedulerAppointmentRenderEventArgs<AppointmentDto> args)
     {
         // Never call StateHasChanged in AppointmentRender - would lead to infinite loop
-       
+
 
         if (args.Data.FullNameCastomer !=null )
         {
-            args.Attributes["style"] = "background: #baa718";
+          //  args.Attributes["style"] = "background: #d4f8e0";
+          // args.Attributes["style"] = "text: black ";
         }
         
     }

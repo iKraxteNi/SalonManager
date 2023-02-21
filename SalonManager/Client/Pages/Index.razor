@@ -11,7 +11,7 @@
 
 <PageTitle>Index</PageTitle>
 
-<h1>Witam w Serwisie </h1>
+
 
 @page "/appointments"
 
@@ -22,88 +22,105 @@
         margin: -100 auto;
         border: 5px solid purple;
         text-align: center;
-        min-width: 120px;
-         border-radius: 10px;
+        min-width: 130px;
+        border-radius: 10px;
     }
 
-    table th, table td {
-        border-left: 0.5px solid #baa718;
-        min-width: 120px;
-        border-right: 0.5px solid #baa718;
-    }
+        table th, table td {
+            border-left: 0.5px solid #baa718;
+            min-width: 130px;
+            border-right: 0.5px solid #baa718;
+            border-radius: 5px
+        }
 
-    table th {
-        border-top: 0.25px solid #baa718;
-        min-width: 125px;
-        border-bottom: 0.25px solid #baa718;
-    }
+        table th {
+            border-top: 0.25px solid #baa718;
+            min-width: 130px;
+            border-bottom: 0.25px solid #baa718;
+        }
 
-    table td {
-        border-bottom: 0.25px solid #baa718;
-        min-width: 120px;
-    }
+        table td {
+            border-bottom: 0.25px solid #baa718;
+            min-width: 130px;
+        }
 </style>
 
-<h1>Plan na dzisiaj</h1>
-@if (appointmentsToday.Any())
-{
-    <table>
-        <thead>
-            <tr>
-                <th>Klient</th>
-                <th>Godziny</th>
-                <th>Usługa</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var appointment in appointmentsToday)
-            {
-                <tr>
-                    <td>@appointment.FullNameCastomer</td>
-                    <td>@appointment.Start.ToString("hh:mm tt")  -  @appointment.End.ToString("hh:mm tt")  </td>
-                    <td>@appointment.ServiceName</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>Brak planowanych wizyt na dzisiaj.</p>
-}
 
-<h1>Plan na jutro</h1>
-@if (appointmentsTomorrow.Any())
-{
-    <table>
-        <thead>
-            <tr>
-                <th>Klient</th>
-                <th>Godziny</th>
-                <th>Usługa</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var appointment in appointmentsToday)
+
+<RadzenCard class="my-4">
+    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" Wrap="FlexWrap.Wrap">
+        <RadzenStack Orientation="Orientation.Vertical" Gap="4px">
+            @if (appointmentsToday.Any())
             {
-                <tr>
-                    <td>@appointment.FullNameCastomer</td>
-                    <td>@appointment.Start.ToString("hh:mm tt")  -  @appointment.End.ToString("hh:mm tt")   </td>
-                    <td>@appointment.ServiceName</td>
-                </tr>
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="3"><h1>Plan na dzisiaj</h1></th>
+                        </tr>
+                        <tr>
+                            <th>Klient</th>
+                            <th>Godziny</th>
+                            <th>Usługa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var appointment in appointmentsToday)
+                        {
+                            <tr>
+                                <td>@appointment.FullNameCastomer</td>
+                                <td>@appointment.Start.ToString("hh:mm tt")  -  @appointment.End.ToString("hh:mm tt")  </td>
+                                <td>@appointment.ServiceName</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>Brak planowanych wizyt na jutro.</p>
-}
+            else
+            {
+                <p>Brak planowanych wizyt na dzisiaj.</p>
+            }
+        </RadzenStack>
+        <RadzenStack Orientation="Orientation.Vertical" Gap="4px">
+
+            @if (appointmentsTomorrow.Any())
+            {
+                <table>
+                    <thead>
+                        <tr>
+                            <th colspan="3"><h1>Plan na jutro</h1></th>
+                        </tr>
+                        <tr>
+                            <th>Klient</th>
+                            <th>Godziny</th>
+                            <th>Usługa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var appointment in appointmentsTomorrow)
+                        {
+                            <tr>
+                                <td>@appointment.FullNameCastomer</td>
+                                <td>@appointment.Start.ToString("hh:mm tt")  -  @appointment.End.ToString("hh:mm tt")   </td>
+                                <td>@appointment.ServiceName</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>Brak planowanych wizyt na jutro.</p>
+            }
+        </RadzenStack>
+
+    </RadzenStack>
+</RadzenCard>
+
 
 @code {
 
 
-      IList<AppointmentDto> appointmentsToday = new List<AppointmentDto>();
+    IList<AppointmentDto> appointmentsToday = new List<AppointmentDto>();
     IList<AppointmentDto> appointmentsTomorrow = new List<AppointmentDto>();
 
     private Timer timer;
@@ -127,19 +144,19 @@ else
 
         appointmentsToday = await Http.GetFromJsonAsync<List<AppointmentDto>>(QueryHelpers.AddQueryString("api/appointment/GetDate", queryToday));
 
-         start = DateTime.Today.AddDays(1);
-         end = DateTime.Today.AddDays(1);
+        DateTime start1 = DateTime.Today.AddDays(1);
+        DateTime end1 = DateTime.Today.AddDays(1);
 
         var queryTomorrow = new Dictionary<string, string>
             {
-                ["StartTime"] = start.ToString("MM/dd/yyyy HH:mm"),
-                ["EndTime"] = end.ToString("MM/dd/yyyy HH:mm")
+                ["StartTime"] = start1.ToString("MM/dd/yyyy HH:mm"),
+                ["EndTime"] = end1.ToString("MM/dd/yyyy HH:mm")
             };
 
         appointmentsTomorrow = await Http.GetFromJsonAsync<List<AppointmentDto>>(QueryHelpers.AddQueryString("api/appointment/GetDate", queryTomorrow));
 
 
-        StateHasChanged();
+       // StateHasChanged();
     }
 
 

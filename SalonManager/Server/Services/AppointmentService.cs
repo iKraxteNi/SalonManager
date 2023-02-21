@@ -87,7 +87,7 @@ namespace SalonManager.Server.Services
 
                 }).ToList();
 
-            return AllAppointments.Where(x => x.Start.Date <= end && start <= x.End.Date && x.IsDeleted == false);
+            return AllAppointments.Where(x => (x.Start >=  start   &&   x.End.Date <= end  && x.IsDeleted == false));
 
         }
 
