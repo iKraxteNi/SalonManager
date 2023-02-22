@@ -2,17 +2,19 @@
 @using Microsoft.AspNetCore.WebUtilities
 @using Newtonsoft.Json
 @using SalonManager.Shared.ResponsesDTOs
+@using Radzen
+@using Radzen.Blazor
 
 @inject HttpClient Http
 
+<h1>Baza klientów </h1>
 
 
-
-<h1>Tabela klientów </h1>
 
 <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px" ButtonStyle="ButtonStyle.Secondary" Text="Zarejestruj Klienta" Click="@InsertRow" Disabled=@(orderToInsert != null) />
-<RadzenDataGrid @ref="ordersGrid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true" EditMode="Radzen.DataGridEditMode.Single"
+<RadzenDataGrid @ref="ordersGrid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true" EditMode="Radzen.DataGridEditMode.Single"  
                 Data="@orders" TItem="CustomerGetDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow">
+
     <Columns>
         <RadzenDataGridColumn TItem="CustomerGetDTO" Property="Id" Title="ID" Width="120px" Visible="false" />
 
@@ -73,89 +75,89 @@
 @code {
 
 
+
     RadzenDataGrid<CustomerGetDTO> ordersGrid;
     IList<CustomerGetDTO> orders;
     CustomerGetDTO orderToInsert;
 
 
-
     protected override async Task OnInitializedAsync()
     {
-        base.OnInitialized();
+    base.OnInitialized();
 
-        orders = await Http.GetFromJsonAsync<List<CustomerGetDTO>>("api/customer/getAll");
+    orders = await Http.GetFromJsonAsync<List<CustomerGetDTO>>("api/customer/getAll");
     }
 
     async Task EditRow(CustomerGetDTO order)
     {
-        await ordersGrid.EditRow(order);
+    await ordersGrid.EditRow(order);
     }
 
     async Task InsertRow()
     {
-        orderToInsert = new CustomerGetDTO();
-        await ordersGrid.InsertRow(orderToInsert);
+    orderToInsert = new CustomerGetDTO();
+    await ordersGrid.InsertRow(orderToInsert);
     }
 
     void OnUpdateRow(CustomerGetDTO order)
     {
-        if (order == orderToInsert)
-        {
-            orderToInsert = null;
-        }
-        orders.Add(order);
+    if (order == orderToInsert)
+    {
+        orderToInsert = null;
+    }
+    orders.Add(order);
     }
 
     async Task SaveRow(CustomerGetDTO order)
     {
-        if (order == orderToInsert)
-        {
-            orderToInsert = null;
-        }
+    if (order == orderToInsert)
+    {
+        orderToInsert = null;
+    }
 
-        await Http.PostAsJsonAsync($"api/customer/editadd", order);
-        orders = await Http.GetFromJsonAsync<List<CustomerGetDTO>>("api/customer/getAll");
+    await Http.PostAsJsonAsync($"api/customer/editadd", order);
+    orders = await Http.GetFromJsonAsync<List<CustomerGetDTO>>("api/customer/getAll");
 
-        OnInitialized();
+    OnInitialized();
     }
 
     void CancelEdit(CustomerGetDTO order)
     {
-        if (order == orderToInsert)
-        {
-            orderToInsert = null;
-        }
-        ordersGrid.CancelEditRow(order);
+    if (order == orderToInsert)
+    {
+        orderToInsert = null;
+    }
+    ordersGrid.CancelEditRow(order);
     }
 
 
     void OnCreateRow(CustomerGetDTO order)
     {
-        orders.Add(order);
+    orders.Add(order);
     }
 
 
     async Task DeleteRow(CustomerGetDTO order)
     {
-        if (order == orderToInsert)
-        {
-            orderToInsert = null;
-        }
+    if (order == orderToInsert)
+    {
+        orderToInsert = null;
+    }
 
-        if (orders.Contains(order))
-        {
-            await Http.PostAsJsonAsync($"api/customer/delete", order);
-            Thread.Sleep(200);
+    if (orders.Contains(order))
+    {
+        await Http.PostAsJsonAsync($"api/customer/delete", order);
+        Thread.Sleep(200);
 
-            orders.Remove(order);
-            await ordersGrid.Reload();
+        orders.Remove(order);
+        await ordersGrid.Reload();
 
-            OnInitialized();
-        }
-        else
-        {
-            ordersGrid.CancelEditRow(order);
-        }
+        OnInitialized();
+    }
+    else
+    {
+        ordersGrid.CancelEditRow(order);
+    }
     }
 }
 

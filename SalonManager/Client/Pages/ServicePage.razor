@@ -5,17 +5,10 @@
 
 @inject HttpClient Http
 
-
-
-
-<h1>Świadczone usługi</h1>
-
-
-
-
+<h1>Baza usług</h1>
 
 <RadzenButton Icon="add_circle_outline" style="margin-bottom: 10px  " ButtonStyle="ButtonStyle.Secondary" Text="Dodaj Usługę" Click="@InsertRow" Disabled=@(orderToInsert != null) />
-<RadzenDataGrid @ref="ordersGrid" AllowFiltering="true" AllowPaging="true" PageSize="5" AllowSorting="true" EditMode="Radzen.DataGridEditMode.Single"
+<RadzenDataGrid @ref="ordersGrid" AllowFiltering="true" AllowPaging="true" PageSize="10" AllowSorting="true" EditMode="Radzen.DataGridEditMode.Single"
                 Data="@orders" TItem="ServiceGetAllDTO" RowUpdate="@OnUpdateRow" RowCreate="@OnCreateRow" Style=" background-color: rebeccapurple">
     <Columns>
         
@@ -28,25 +21,25 @@
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Price" Title="Cena"   MinWidth="85px" Width="128">
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Price" Title="Cena"   MinWidth="85px" Width="100">
             <Template Context="order">
                 @String.Format(  "{0} PLN", order.Price)
             </Template>
             <EditTemplate Context="order">
-                <RadzenNumeric @bind-Value="order.Price" Style="width:30%" />
+                <RadzenNumeric @bind-Value="order.Price" Style="width:20%" />
             </EditTemplate>
         </RadzenDataGridColumn>
-        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Duration" Title="Czas min."  MinWidth="=76px" Width="128">
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Duration" Title="Czas min."  MinWidth="=76px" Width="100">
             <Template Context="order">
                 
                 @String.Format(" {0:F0} min", order.Duration)
             </Template>
             <EditTemplate Context="order">
-                <RadzenNumeric @bind-Value="order.Duration" Style="width:30%;" />
+                <RadzenNumeric @bind-Value="order.Duration" Style="width:20%;"  />
             </EditTemplate>
         </RadzenDataGridColumn>
 
-        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Note" Title=" Info" MinWidth="100px">
+        <RadzenDataGridColumn TItem="ServiceGetAllDTO" Property="Note" Title=" Info" MinWidth="120px" >
             <EditTemplate Context="order">
                 <RadzenTextBox @bind-Value="order.Note" Style="width:100%; display: block" Name="Info" />
             </EditTemplate>

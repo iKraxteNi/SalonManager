@@ -1,12 +1,8 @@
 ﻿@page "/"
-
 @using Microsoft.AspNetCore.WebUtilities
 @using Radzen.Blazor
 @using Radzen.Blazor.Rendering
 @using SalonManager.Shared.ResponsesDTOs
-
-
-
 @inject HttpClient Http
 
 <PageTitle>Index</PageTitle>
@@ -81,6 +77,23 @@
             }
         </RadzenStack>
         <RadzenStack Orientation="Orientation.Vertical" Gap="4px">
+            <div class="col-md-7 col-sm-11 p-1">
+                <RadzenRadialGauge Style="width: 180%; height: 300px; ">
+                    <RadzenRadialGaugeScale Step="1" Min="0" Max="12" StartAngle="0" EndAngle="360" ShowFirstTick="false"
+                                            MinorStep=@minorStep
+                                            TickLength="20"
+                                            MinorTickLength="10"
+                                            TickLabelOffset="40"
+                                            TickPosition="GaugeTickPosition.Inside">
+                        <RadzenRadialGaugeScalePointer Value=@hours Length="0.6" ShowValue="false" />
+                        <RadzenRadialGaugeScalePointer Value=@seconds Length="0.9" Fill="red" Width="2" ShowValue="false" />
+                        <RadzenRadialGaugeScalePointer Value=@minutes Length="0.8" ShowValue="false" />
+                    </RadzenRadialGaugeScale>
+                </RadzenRadialGauge>
+            </div>
+
+        </RadzenStack>
+        <RadzenStack Orientation="Orientation.Vertical" Gap="4px">
 
             @if (appointmentsTomorrow.Any())
             {
@@ -125,10 +138,33 @@
 
     private Timer timer;
 
+    Timer timerClock;
+    double hours;
+    double minutes;
+    double seconds;
+    double minorStep = 12 / 60.0;
+
+
     protected override async Task OnInitializedAsync()
     {
         await LoadData();
         timer = new Timer(async (state) => await LoadData(), null, TimeSpan.FromSeconds(600), TimeSpan.FromSeconds(600));
+
+                timerClock = new Timer(state =>
+        {
+            var now = DateTime.Now;
+
+            hours = now.Hour % 12 + now.Minute / 60.0;
+
+            minutes = now.Minute * minorStep + now.Second * 12 / 3600.0;
+            seconds = now.Second * minorStep;
+
+            InvokeAsync(StateHasChanged);
+        }, null, 0, 1000);
+    }
+        public void Dispose()
+    {
+        timerClock?.Dispose();
     }
 
     private async Task LoadData()
@@ -156,7 +192,7 @@
         appointmentsTomorrow = await Http.GetFromJsonAsync<List<AppointmentDto>>(QueryHelpers.AddQueryString("api/appointment/GetDate", queryTomorrow));
 
 
-       // StateHasChanged();
+        // StateHasChanged();
     }
 
 

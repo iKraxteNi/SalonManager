@@ -11,7 +11,7 @@
         <div class="col-sm-12 my-3">
             <RadzenCard class="w-100 mb-4">
 
-                <RadzenLabel Text="Dochód całkowity" Style="vertical-align: middle;text-align: center; display:flex;flex-direction:column;" />
+                <RadzenLabel Text="Dochód całkowity" Style="vertical-align: middle;text-align: center; display:flex; flex-direction:column;" />
 
             </RadzenCard>
             <RadzenChart>
@@ -31,17 +31,17 @@
     </div>
 </div>
 
-<div class="rz-p-0 rz-text-align-center">
+<div class="rz-p-0 rz-text-align-center " >
     <RadzenCheckBox @bind-Value=@showDataLabels Name="dataLabels" />
-    <RadzenLabel Text="Widok danych" Component="dataLabels"  Style=" margin-left: 8px; vertical-align: middle;" />
+    <RadzenLabel Text="Widok danych" Component="dataLabels"  Style=" margin-left: 10px; vertical-align: middle;" />
 </div>
 
 <div class="container">
     <div class="row">
-        <div class="col-sm-12 col-lg-6 offset-lg-3 my-5">
+        <div class="col-sm-12  my-3 ">
             <RadzenCard class="w-100 mb-4">
 
-                <RadzenLabel Text="Dochód z poszczególnych usług" Style=" vertical-align: middle;text-align: center; display:flex;flex-direction:column; " />
+                <RadzenLabel Text="Dochód z poszczególnych usług" Style=" vertical-align: middle; text-align: center; display:flex; flex-direction:column; " />
 
             </RadzenCard>
             <RadzenChart>
@@ -103,7 +103,8 @@
 
 
 
-        DateTime start = new DateTime(DateTime.Today.Year, 1, 1, 0, 0, 0);
+       DateTime start = new DateTime(DateTime.Today.Year, 1, 1, 0, 0, 0); // current year
+      // DateTime start = DateTime.Now.AddYears(-1) ;// from now to same date last year 
         DateTime end = DateTime.Now;
 
         var queryToday = new Dictionary<string, string>
